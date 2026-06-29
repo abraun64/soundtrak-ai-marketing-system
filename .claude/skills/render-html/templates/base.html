@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ title }} — Marketing AI System</title>
+  <style>{{ styles }}</style>
+</head>
+<body class="template-{{ template_name }}">
+  <header class="page-header">
+    <div class="page-header__inner">
+      <nav class="breadcrumb" aria-label="Breadcrumb">{{ breadcrumb }}</nav>
+      <div class="page-header__right">
+        {{ library_nav }}
+        <button type="button" class="refresh-btn" onclick="location.reload()" title="Refresh this page" aria-label="Refresh">&#10227;</button>
+        <span class="page-header__template" aria-hidden="true">{{ template_name }}</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="page-main">
+    <article class="content">
+      {{ body }}
+    </article>
+  </main>
+
+  <footer class="page-footer">
+    <span>Source: <code>{{ source_path }}</code> · Markdown is authoritative · Re-rendered on CM's next invocation</span>
+  </footer>
+</body>
+</html>

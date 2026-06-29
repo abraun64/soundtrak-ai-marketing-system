@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cookbook — Schema — Marketing AI System</title>
+  <style>/* Marketing AI System — social/email in-situ mockup chrome.
+ * Renders collapsed (feed) + expanded (clicked-open) states per form.
+ * Loaded automatically alongside system.css for all templates.
+ * Form-specific tokens live under .mock-<form> scopes so they don't bleed.
+ */
+
+/* --- Mockup zone layout (sits above markdown narrative) --- */
+.mockups {
+  margin: 0 0 32px 0;
+}
+.mockups:empty { display: none; }
+
+.mock-variant {
+  margin: 0 0 40px 0;
+}
+.mock-variant__label {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  margin: 0 0 12px 0;
+  padding: 0 4px;
+}
+
+.mock-states {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+@media (max-width: 1100px) {
+  .mock-states { grid-template-columns: 1fr; }
+}
+
+.mock-state {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.mock-state__label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-subtle);
+  margin: 0 0 14px 0;
+  text-align: center;
+}
+
+/* --- LinkedIn post chrome --- */
+.mock-li {
+  --li-bg: #f3f2ef;
+  --li-card-bg: #ffffff;
+  --li-text: #000000e6;
+  --li-text-secondary: #00000099;
+  --li-text-tertiary: #00000066;
+  --li-border: #00000014;
+  --li-accent: #0a66c2;
+  --li-hover: #00000008;
+}
+.mock-li .mock-state { background: var(--li-bg); }
+.mock-li .li-card {
+  width: 100%;
+  max-width: 552px;
+  background: var(--li-card-bg);
+  border: 1px solid var(--li-border);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.04);
+  font-family: -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  color: var(--li-text);
+}
+.mock-li .li-header {
+  display: flex;
+  padding: 12px 16px 8px;
+  align-items: center;
+  gap: 8px;
+}
+.mock-li .li-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #1a2a5e;
+  color: #f8f5ee;
+  font-weight: 700;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-family: "Caveat", "Segoe Script", cursive;
+}
+.mock-li .li-author { flex: 1; min-width: 0; }
+.mock-li .li-author-name { font-weight: 600; font-size: 14px; line-height: 1.3; }
+.mock-li .li-author-title { font-size: 12px; color: var(--li-text-secondary); line-height: 1.3; margin-top: 1px; }
+.mock-li .li-author-meta { font-size: 12px; color: var(--li-text-tertiary); line-height: 1.3; margin-top: 1px; }
+.mock-li .li-more { color: var(--li-text-secondary); font-size: 20px; padding: 4px 8px; }
+.mock-li .li-body {
+  padding: 0 16px 8px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--li-text);
+}
+.mock-li .li-body p { margin: 0 0 8px; }
+.mock-li .li-see-more {
+  color: var(--li-text-secondary);
+  cursor: pointer;
+  font-size: 14px;
+  padding: 0 16px 8px;
+  user-select: none;
+}
+.mock-li .li-image {
+  width: 100%;
+  display: block;
+  background: #f8f5ee;
+  border: none;
+  border-radius: 0;
+  margin: 0;
+}
+.mock-li .li-reactions {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 16px;
+  font-size: 12px;
+  color: var(--li-text-secondary);
+  border-bottom: 1px solid var(--li-border);
+}
+.mock-li .li-reaction-icons { display: inline-flex; vertical-align: middle; }
+.mock-li .li-reaction-icons span {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-left: -3px;
+  border: 1.5px solid #fff;
+  font-size: 10px;
+  text-align: center;
+  line-height: 13px;
+  color: white;
+}
+.mock-li .li-r-like { background: #378fe9; }
+.mock-li .li-r-insight { background: #f5b800; color: #333 !important; }
+.mock-li .li-r-celebrate { background: #6dae4f; }
+.mock-li .li-reactions-left { display: flex; align-items: center; gap: 6px; }
+.mock-li .li-actions {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  padding: 4px;
+}
+.mock-li .li-action {
+  text-align: center;
+  padding: 8px 4px;
+  color: var(--li-text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+}
+.mock-li .li-comments {
+  border-top: 1px solid var(--li-border);
+  padding: 12px 16px;
+  background: #fafafa;
+}
+.mock-li .li-comment { display: flex; gap: 8px; margin-bottom: 12px; }
+.mock-li .li-comment:last-child { margin-bottom: 0; }
+.mock-li .li-c-avatar {
+  width: 32px; height: 32px; border-radius: 50%; background: #ddd;
+  color: #555; font-weight: 600; font-size: 13px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.mock-li .li-c-body {
+  background: #f3f2ef; border-radius: 0 8px 8px 8px;
+  padding: 8px 12px; font-size: 13px; line-height: 1.4; flex: 1;
+}
+.mock-li .li-c-author { font-weight: 600; margin-bottom: 2px; }
+.mock-li .li-c-meta { font-size: 11px; color: var(--li-text-tertiary); margin-top: 4px; }
+
+/* --- Email chrome (inbox row + opened state) --- */
+.mock-email {
+  --em-bg: #f6f8fc;
+  --em-card-bg: #ffffff;
+  --em-text: #202124;
+  --em-text-secondary: #5f6368;
+  --em-border: #e5e7eb;
+  --em-accent: #1a73e8;
+  --em-unread: #f3f7fd;
+}
+.mock-email .mock-state { background: var(--em-bg); }
+.mock-email .em-card {
+  width: 100%;
+  max-width: 640px;
+  background: var(--em-card-bg);
+  border: 1px solid var(--em-border);
+  border-radius: 8px;
+  overflow: hidden;
+  font-family: "Google Sans", Roboto, -apple-system, "Segoe UI", Arial, sans-serif;
+  color: var(--em-text);
+  font-size: 14px;
+}
+.mock-email .em-inbox-toolbar {
+  background: var(--em-bg);
+  padding: 8px 16px;
+  font-size: 11px;
+  color: var(--em-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-bottom: 1px solid var(--em-border);
+}
+.mock-email .em-inbox-row {
+  display: grid;
+  grid-template-columns: 28px 180px 1fr 80px;
+  gap: 12px;
+  padding: 10px 16px;
+  align-items: center;
+  background: var(--em-unread);
+  font-weight: 600;
+}
+.mock-email .em-star { color: #d1d5db; font-size: 16px; }
+.mock-email .em-from { font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mock-email .em-snippet { font-size: 14px; color: var(--em-text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 400; }
+.mock-email .em-snippet b { font-weight: 600; }
+.mock-email .em-snippet .em-preview { color: var(--em-text-secondary); font-weight: 400; }
+.mock-email .em-date { text-align: right; font-size: 12px; color: var(--em-text-secondary); }
+
+/* Opened state */
+.mock-email .em-opened-header {
+  padding: 20px 24px 12px;
+  border-bottom: 1px solid var(--em-border);
+}
+.mock-email .em-subject { font-size: 20px; font-weight: 400; margin: 0 0 12px 0; color: var(--em-text); }
+.mock-email .em-meta-row { display: flex; gap: 12px; align-items: center; }
+.mock-email .em-sender-avatar {
+  width: 40px; height: 40px; border-radius: 50%; background: var(--em-accent);
+  color: white; font-weight: 600; font-size: 16px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.mock-email .em-sender-name { font-size: 14px; font-weight: 600; }
+.mock-email .em-sender-email { font-size: 12px; color: var(--em-text-secondary); }
+.mock-email .em-sent-meta { margin-left: auto; font-size: 12px; color: var(--em-text-secondary); }
+.mock-email .em-opened-body {
+  padding: 24px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--em-text);
+}
+.mock-email .em-opened-body p { margin: 0 0 14px 0; }
+.mock-email .em-opened-body a { color: var(--em-accent); }
+.mock-email .em-opened-body h1, .mock-email .em-opened-body h2, .mock-email .em-opened-body h3 {
+  margin: 20px 0 10px 0;
+}
+
+/* --- Twitter / X (stub) --- */
+.mock-tw {
+  --tw-bg: #ffffff;
+  --tw-text: #0f1419;
+  --tw-text-secondary: #536471;
+  --tw-border: #eff3f4;
+  --tw-accent: #1d9bf0;
+}
+.mock-tw .mock-state { background: #f7f9fa; }
+.mock-tw .tw-card {
+  width: 100%;
+  max-width: 600px;
+  background: var(--tw-bg);
+  border: 1px solid var(--tw-border);
+  border-radius: 16px;
+  padding: 16px;
+  font-family: "Chirp", -apple-system, "Segoe UI", Arial, sans-serif;
+  color: var(--tw-text);
+}
+.mock-tw .tw-header { display: flex; gap: 10px; }
+.mock-tw .tw-avatar {
+  width: 40px; height: 40px; border-radius: 50%; background: #1a2a5e;
+  color: #f8f5ee; font-weight: 700; font-size: 14px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.mock-tw .tw-name { font-weight: 700; font-size: 15px; }
+.mock-tw .tw-handle { color: var(--tw-text-secondary); font-size: 14px; }
+.mock-tw .tw-body { font-size: 15px; line-height: 1.4; margin: 10px 0; white-space: pre-wrap; }
+.mock-tw .tw-image { width: 100%; border-radius: 16px; border: 1px solid var(--tw-border); margin: 10px 0 0; display: block; }
+
+/* --- Instagram (stub) --- */
+.mock-ig {
+  --ig-bg: #ffffff;
+  --ig-text: #262626;
+  --ig-text-secondary: #8e8e8e;
+  --ig-border: #dbdbdb;
+}
+.mock-ig .mock-state { background: #fafafa; }
+.mock-ig .ig-card {
+  width: 100%;
+  max-width: 470px;
+  background: var(--ig-bg);
+  border: 1px solid var(--ig-border);
+  border-radius: 8px;
+  font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  color: var(--ig-text);
+  overflow: hidden;
+}
+.mock-ig .ig-header { display: flex; gap: 10px; align-items: center; padding: 12px; }
+.mock-ig .ig-avatar {
+  width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+  display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 12px;
+}
+.mock-ig .ig-handle { font-weight: 600; font-size: 14px; }
+.mock-ig .ig-image { width: 100%; display: block; border: none; border-radius: 0; margin: 0; aspect-ratio: 1 / 1; object-fit: cover; }
+.mock-ig .ig-caption { padding: 12px; font-size: 14px; line-height: 1.4; }
+.mock-ig .ig-caption b { font-weight: 600; margin-right: 6px; }
+
+/* --- Substack (stub) --- */
+.mock-sub {
+  --sub-bg: #ffffff;
+  --sub-text: #1a1a1a;
+  --sub-text-secondary: #6b6b6b;
+  --sub-border: #e5e5e5;
+  --sub-accent: #ff6719;
+}
+.mock-sub .mock-state { background: #f5f5f5; }
+.mock-sub .sub-card {
+  width: 100%;
+  max-width: 600px;
+  background: var(--sub-bg);
+  border: 1px solid var(--sub-border);
+  border-radius: 4px;
+  padding: 24px;
+  font-family: Georgia, "Times New Roman", serif;
+  color: var(--sub-text);
+}
+.mock-sub .sub-pub { font-size: 12px; color: var(--sub-text-secondary); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 8px; }
+.mock-sub .sub-title { font-size: 24px; font-weight: 700; line-height: 1.2; margin: 0 0 8px 0; }
+.mock-sub .sub-subtitle { font-size: 16px; color: var(--sub-text-secondary); margin: 0 0 16px 0; }
+.mock-sub .sub-image { width: 100%; border: 1px solid var(--sub-border); margin: 0 0 16px 0; display: block; border-radius: 0; }
+.mock-sub .sub-body { font-size: 16px; line-height: 1.6; }
+
+/* --- Stub-form placeholder note --- */
+.mock-stub-note {
+  font-size: 12px;
+  color: var(--text-subtle);
+  font-style: italic;
+  padding: 8px 12px;
+  background: var(--code-bg);
+  border-radius: 4px;
+  margin-top: 8px;
+  max-width: 600px;
+}
+
+/* --- Asset-preview page main container width --- */
+.page-main--asset-preview { max-width: var(--max-width-wide); }
+.content--narrative { /* inherits .content baseline */ }
+
+/* Marketing AI System — clean-default-minimal system UI
+ * Stripe/Linear aesthetic. System fonts. Generous whitespace.
+ * No external font dependencies.
+ */
+
+:root {
+  --bg: #fafafa;
+  --surface: #ffffff;
+  --border: #e5e7eb;
+  --border-strong: #d1d5db;
+  --text: #111827;
+  --text-muted: #6b7280;
+  --text-subtle: #9ca3af;
+  --accent: #2563eb;
+  --accent-soft: #eff6ff;
+  --success: #10b981;
+  --success-soft: #ecfdf5;
+  --warning: #f59e0b;
+  --warning-soft: #fffbeb;
+  --danger: #ef4444;
+  --danger-soft: #fef2f2;
+  --code-bg: #f3f4f6;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.07);
+  --radius: 8px;
+  --radius-lg: 12px;
+  --max-width: 880px;          /* prose-narrow — for Brief / Brand Context reading */
+  --max-width-wide: 1480px;    /* dashboard / plan / tasks / index / asset-preview — tables + comparisons */
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* --- Header --- */
+.page-header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 32px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.page-header__inner {
+  max-width: var(--max-width-wide);
+  margin: 0 auto;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.page-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 13px;
+  line-height: 1.4;
+}
+.crumb {
+  color: var(--text-muted);
+  text-decoration: none;
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: background 0.15s, color 0.15s;
+}
+.crumb-link {
+  color: var(--accent);
+}
+.crumb-link:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+  text-decoration: underline;
+}
+.crumb-current {
+  color: var(--text);
+  font-weight: 600;
+}
+.crumb-sep {
+  color: var(--text-subtle);
+  user-select: none;
+}
+.page-header__template {
+  background: var(--accent-soft);
+  color: var(--accent);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 500;
+  font-family: ui-monospace, monospace;
+  font-size: 11px;
+  opacity: 0.6;
+}
+.page-header__right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.library-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+}
+.lib-link {
+  color: var(--text-muted);
+  text-decoration: none;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+.lib-link:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-color: var(--accent-soft);
+}
+.lib-link--current {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-color: var(--accent-soft);
+  font-weight: 600;
+}
+
+/* --- Main content --- */
+.page-main {
+  max-width: var(--max-width-wide);
+  margin: 48px auto;
+  padding: 0 32px;
+}
+
+/* Prose-narrow templates (Brief, Brand Context) get a narrower line length for readability */
+.template-brief .page-main,
+.template-brand-context .page-main {
+  max-width: var(--max-width);
+}
+
+.content {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 48px 56px;
+  box-shadow: var(--shadow-sm);
+}
+
+/* --- Typography --- */
+.content h1 {
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0 0 8px 0;
+  line-height: 1.2;
+}
+.content h2 {
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 40px 0 12px 0;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+.content h3 {
+  font-size: 17px;
+  font-weight: 600;
+  margin: 28px 0 8px 0;
+}
+.content h4 {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 24px 0 8px 0;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 12px;
+}
+.content p {
+  margin: 0 0 16px 0;
+}
+.content ul, .content ol {
+  margin: 0 0 16px 0;
+  padding-left: 24px;
+}
+.content li { margin-bottom: 4px; }
+
+.content strong { font-weight: 600; color: var(--text); }
+.content em { font-style: italic; }
+
+.content code {
+  background: var(--code-bg);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: ui-monospace, "SF Mono", monospace;
+  font-size: 13px;
+}
+.content pre {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  overflow-x: auto;
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 0 0 16px 0;
+}
+.content pre code {
+  background: none;
+  padding: 0;
+}
+
+.content a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.15s;
+}
+.content a:hover {
+  border-bottom-color: var(--accent);
+}
+
+.content blockquote {
+  border-left: 3px solid var(--border-strong);
+  padding: 4px 16px;
+  margin: 0 0 16px 0;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* --- Tables --- */
+.content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 20px 0;
+  font-size: 14px;
+}
+.content table th {
+  text-align: left;
+  font-weight: 600;
+  background: var(--bg);
+  padding: 10px 12px;
+  border-bottom: 2px solid var(--border-strong);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+.content table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+.content table tr:last-child td { border-bottom: none; }
+.content table tr:hover td { background: var(--bg); }
+
+/* --- Status badges (used in inline markdown via spans or by templates) --- */
+.badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: ui-monospace, monospace;
+}
+.badge--draft { background: var(--code-bg); color: var(--text-muted); }
+.badge--approved { background: var(--success-soft); color: var(--success); }
+.badge--awaiting { background: var(--warning-soft); color: var(--warning); }
+.badge--blocked { background: var(--danger-soft); color: var(--danger); }
+.badge--live { background: var(--accent-soft); color: var(--accent); }
+
+/* --- HR --- */
+.content hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 32px 0;
+}
+
+/* --- Images --- */
+.content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  margin: 16px 0;
+}
+
+/* --- Footer --- */
+.page-footer {
+  max-width: var(--max-width-wide);
+  margin: 32px auto;
+  padding: 16px 32px;
+  font-size: 12px;
+  color: var(--text-subtle);
+  text-align: center;
+}
+.page-footer code {
+  background: var(--code-bg);
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-size: 11px;
+}
+
+/* --- Collapsible details/summary (decision-first / reference-collapsed pattern) --- */
+.content details {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin: 24px 0;
+  overflow: hidden;
+  transition: background 0.2s;
+}
+.content details[open] {
+  background: var(--surface);
+}
+.content details summary {
+  padding: 14px 20px;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--text);
+  font-size: 14px;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  user-select: none;
+  transition: background 0.15s, color 0.15s;
+}
+.content details summary::-webkit-details-marker { display: none; }
+.content details summary::before {
+  content: "▸";
+  color: var(--text-muted);
+  font-size: 12px;
+  transition: transform 0.2s;
+  flex-shrink: 0;
+  display: inline-block;
+  width: 12px;
+}
+.content details[open] summary::before {
+  transform: rotate(90deg);
+}
+.content details summary:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.content details summary strong {
+  font-weight: 600;
+}
+.content details > *:not(summary) {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+.content details > *:last-child {
+  padding-bottom: 16px;
+}
+.content details summary + * {
+  margin-top: 12px;
+}
+/* Expanded content inside details should keep all the proper typography */
+.content details h2,
+.content details h3,
+.content details h4 {
+  margin-top: 24px;
+}
+.content details h2:first-of-type,
+.content details h3:first-of-type,
+.content details h4:first-of-type {
+  margin-top: 12px;
+}
+.content details table {
+  margin-bottom: 16px;
+}
+
+/* --- Checkboxes in lists (task lists) --- */
+.content ul.task-list,
+.content ul.task-list li {
+  list-style: none;
+  padding-left: 0;
+}
+.content input[type="checkbox"] {
+  margin-right: 8px;
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+  .page-main { padding: 0 16px; margin: 24px auto; }
+  .content { padding: 28px 24px; border-radius: var(--radius); }
+  .content h1 { font-size: 26px; }
+  .content h2 { font-size: 19px; }
+  .page-header { padding: 12px 16px; }
+}
+
+/* --- Print --- */
+@media print {
+  .page-header, .page-footer { display: none; }
+  .content { border: none; box-shadow: none; padding: 0; }
+}
+</style>
+</head>
+<body class="template-spec">
+  <header class="page-header">
+    <div class="page-header__inner">
+      <nav class="breadcrumb" aria-label="Breadcrumb"><a class="crumb crumb-link" href="../../campaigns/index.html">🏠 All Campaigns</a></nav>
+      <div class="page-header__right">
+        <nav class="library-nav" aria-label="Reference libraries">  <a class="lib-link" href="../../tenant-brand/gold-standard/INDEX.html" title="Operator-curated bar">⭐ Gold-Standard</a>  <a class="lib-link" href="../../tenant/inspiration/INDEX.html" title="Generalist canonical work">📚 Inspiration</a></nav>
+        <span class="page-header__template" aria-hidden="true">spec</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="page-main">
+    <article class="content">
+      <h1 id="cookbook-schema">Cookbook — Schema</h1>
+<p>A <strong>Cookbook</strong> is a step-by-step recipe that lets the operator execute a technical task they may not know how to do. Authored when CM's knowledge-gap classification on a task flags <em>technical execution</em> (not <em>marketing decision</em>).</p>
+<p><strong>Length target</strong>: as long as needed to execute cleanly. Compression is a feature; cookbook completeness trumps brevity.</p>
+<p><strong>Stored</strong>: alongside the asset or pre-flight item that needs it. Path pattern:
+- Inline inside an asset: <code>campaigns/&lt;slug&gt;/assets/&lt;asset&gt;/cookbooks/&lt;task-slug&gt;.md</code>
+- Standalone (cross-campaign, e.g. reusable platform setup): <code>cookbooks/&lt;task-slug&gt;.md</code> at project root
+- Pre-flight: <code>campaigns/&lt;slug&gt;/pre-flight/cookbooks/&lt;task-slug&gt;.md</code></p>
+<p><strong>Locked</strong>: each cookbook is versioned. When the underlying tool changes (UI redesign, deprecated feature), the cookbook gets vN+1.</p>
+<hr>
+<h2 id="audience-assumption-locked-default-retro-001-2026-05-27">Audience assumption (locked default — Retro 001 / 2026-05-27)</h2>
+<p>Cookbooks assume <strong>B2B-marketer baseline knowledge</strong>:
+- ✅ Reader knows what a UTM is, what a tracking pixel is, what an event listener is, what a conversion is, what a marketing funnel does
+- ❌ Reader does NOT know the click-by-click of GA / GTM / Posthog / Segment / Mixpanel / specific platform UIs
+- ❌ Reader does NOT know platform-specific terminology (e.g. "Tag" vs "Trigger" vs "Variable" in GTM; "Custom Definitions" in GA4)</p>
+<p>This audience model maps to a senior CMO who understands the <em>purpose</em> of analytics but doesn't run the implementation themselves. Operator confirmed default 2026-05-27.</p>
+<p><strong>Advanced toggle</strong>: every cookbook MAY include an optional <code>## Advanced shortcut</code> block at the end for users who already know the platform — collapsed by default; reveals the same outcome via fewer / different steps. Operator decides per task whether to include.</p>
+<hr>
+<h2 id="schema">Schema</h2>
+<pre><code class="language-markdown"># Cookbook — &lt;task name&gt;
+
+**Use this when**: &lt;one sentence — when does this cookbook fire? e.g. &quot;You need to add GA4 event tracking for the new utility-tool downloads on /how-we-work&quot;&gt;
+**Platform**: &lt;e.g. Google Analytics 4 + Google Tag Manager&gt;
+**Time estimate**: &lt;e.g. &quot;~20 min for first time; ~5 min thereafter&quot;&gt;
+**Prerequisites**: &lt;what must be true before you start — e.g. &quot;GA4 + GTM are already installed on the site (per Pre-flight P1 baseline check)&quot;&gt;
+
+---
+
+## What you'll have when you're done
+
+&lt;2–3 sentences describing the outcome. The reader should know exactly what success looks like before starting. Not &quot;the tag will be set up&quot; — but &quot;the GA4 event `tool_download_click` will fire whenever a visitor clicks any of the three utility-download buttons on `/how-we-work`, and you'll be able to see it in GA4's real-time view within 5 minutes.&quot;&gt;
+
+---
+
+## Steps
+
+1. **&lt;verb-first action&gt;** — &lt;one sentence imperative&gt;.
+   &lt;If the step has a sub-action: indented bullet with the sub-action&gt;.
+   &lt;Screenshot or interface-name annotation as needed&gt;.
+
+2. **&lt;next action&gt;** — ...
+
+3. ...
+
+---
+
+## Verify it worked
+
+&lt;3–5 explicit checks the reader runs to confirm success. Each one names the exact place to look and what they should see. e.g. &quot;Open GA4 → Reports → Realtime. Click a utility button on /how-we-work. Within 30 seconds, you should see `tool_download_click` appear in the 'Event count by Event name' card.&quot;&gt;
+
+---
+
+## Troubleshooting
+
+| Symptom | Likely cause | Fix |
+|---|---|---|
+| &lt;e.g. &quot;Event doesn't appear in Realtime&quot;&gt; | &lt;e.g. &quot;GTM container not published&quot;&gt; | &lt;e.g. &quot;GTM → Submit → Publish. Wait 2 min. Refresh GA4 Realtime.&quot;&gt;|
+| ... | ... | ... |
+
+---
+
+## Advanced shortcut *(optional — collapsed by default in rendered HTML)*
+
+&lt;For readers who already know the platform — same outcome via fewer steps. e.g. &quot;If you're comfortable in GTM: create a Click Trigger filtered by CSS selector `.utility-download-btn`, fire a GA4 Event tag with name `tool_download_click`, pass `data-utility` as event_parameter `utility_slug`. Publish.&quot;&gt;
+
+---
+
+## What to do next
+
+&lt;Single next step or &quot;Done — return to &lt;upstream task name&gt; on the dashboard.&quot;&gt;
+</code></pre>
+<hr>
+<h2 id="drafting-discipline">Drafting discipline</h2>
+<ul>
+<li><strong>Verb-first imperatives</strong> in step text — "Click X" not "You should click X" not "X should be clicked".</li>
+<li><strong>Name the exact UI element</strong> every time — "Click the 'Submit' button (top-right of the GTM workspace, blue)" not "Submit your changes".</li>
+<li><strong>One outcome per step</strong> — if a step does two things, split it.</li>
+<li><strong>Verification is mandatory</strong> — every cookbook ends with explicit success checks. Without verification, the operator finishes and isn't sure if it worked. The verification step is part of the recipe, not optional.</li>
+<li><strong>Troubleshooting covers the top 3 failure modes</strong> — for each, name the symptom (what they'll see), the likely cause, and the fix.</li>
+<li><strong>Time estimate must be honest</strong> — if it's a 45-min first-time setup, say so. Don't compress.</li>
+<li><strong>Screenshots</strong> — embed when a UI element would be hard to find by description alone. Save to <code>cookbooks/&lt;task-slug&gt;/screenshots/</code> and reference inline. Annotate with red callouts if needed.</li>
+</ul>
+<h3 id="file-handoff-discipline-post-retro-001-capture-process-feedback-2026-05-28">File-handoff discipline (post-Retro-001 capture-process feedback, 2026-05-28)</h3>
+<p>Any cookbook step that asks the operator to <strong>save a file to disk</strong> MUST include:</p>
+<ol>
+<li><strong>Full absolute path in a copy-paste code block</strong> — never "save to this folder" or relative paths. The operator may open this file in a future session with no surrounding context; they need to copy the path into their Save As dialog directly.</li>
+<li><strong>Exact filename specified</strong> — if the pipeline depends on a specific filename for downstream automation (Producer's annotation pass expects <code>chatgpt-screenshot.png</code>, not <code>chatgpt-screenshot-utility-marketing.png</code>), say so explicitly. Add a note that the operator can ALSO save a descriptive copy alongside; both files coexist; pipeline reads the exact-name version.</li>
+</ol>
+<h3 id="capture-screenshot-discipline-post-retro-001-feedback-2026-05-28">Capture / screenshot discipline (post-Retro-001 feedback, 2026-05-28)</h3>
+<p>Any cookbook step that asks the operator to <strong>take a screenshot</strong> MUST include:</p>
+<ol>
+<li><strong>Browser window resize tip</strong> — instruct the operator to resize to a screenshot-friendly width (~1000–1100px for chat-app screenshots; ~1400px for full-page web app screenshots). Full-width windows produce awkward text wrapping in the capture; too-narrow produces overly-tall screenshots.</li>
+<li><strong>High-resolution display preference</strong> — if the operator has multiple monitors (laptop Retina / 4K external), instruct them to take the screenshot on the highest-DPI display. Sharper text matters for downstream annotation passes.</li>
+<li><strong>What MUST be visible in the frame</strong> — explicitly name the in-screenshot elements the cookbook depends on (e.g. "model identifier", "timestamp", "full prompt + full output"). If those can't fit in one frame, instruct on taking a second screenshot with overlap.</li>
+</ol>
+<h2 id="what-a-cookbook-is-not">What a Cookbook is NOT</h2>
+<ul>
+<li>A spec document (specs describe what should happen; cookbooks describe how to make it happen)</li>
+<li>A reference manual (a cookbook fires for one task; a reference is consulted across many)</li>
+<li>A strategy decision (decisions don't get cookbooks; they get decision frames)</li>
+<li>A "FYI" — every cookbook is actionable; if there's no action to take, it's reference content, not a cookbook</li>
+</ul>
+<h2 id="anti-pattern-spec-shaped-cookbook">Anti-pattern: spec-shaped cookbook</h2>
+<p>If a cookbook reads like a spec ("Configure event <code>tool_download_click</code> with parameters X, Y, Z to fire on the utility-download buttons") — it's wrong. The operator can't act on that. Re-author as numbered click-by-click steps in the platform UI.</p>
+<p>The spec belongs in the Asset's own markdown (alongside the Per-Step Brief). The cookbook is how the operator gets the spec executed.</p>
+<h2 id="anti-pattern-missing-verification-step">Anti-pattern: missing verification step</h2>
+<p>If a cookbook ends with the last setup action — it's incomplete. Every cookbook ends with verification. The reader's not done until they've confirmed success.</p>
+<h2 id="render">Render</h2>
+<p>Cookbooks render via <code>/render-html</code> with template <code>cookbook</code> (or default fallback). Template should:
+- Pin "What you'll have when you're done" + "Prerequisites" + "Time estimate" at the top in a callout block
+- Number the steps prominently with anchor links (<code>#step-3</code>)
+- Display the Verify section in a distinct visual block (success-green-tinted)
+- Collapse the "Advanced shortcut" block by default (<code>&lt;details&gt;</code>)
+- Collapse the "Troubleshooting" table by default (<code>&lt;details&gt;</code>)
+- Footer link to "What to do next"</p>
+    </article>
+  </main>
+
+  <footer class="page-footer">
+    <span>Source: <code>docs\specs\cookbook.md</code> · Markdown is authoritative · Re-rendered on CM's next invocation</span>
+  </footer>
+</body>
+</html>

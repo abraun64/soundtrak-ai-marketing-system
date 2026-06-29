@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deployment guide — Soundtrak AI Marketing System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav class="topnav">
+  <div class="brandline"><span class="dot"></span> Soundtrak AI Marketing System</div>
+  <div class="navlinks">
+    <a href="help.html">Help &amp; guides</a>
+    <a class="here" href="deployment-guide.html">Deployment</a>
+    <a href="getting-started.html">Getting started</a>
+    <a href="../training/index.html">Training</a>
+  </div>
+</nav>
+<div class="wrap">
+  <h1>Deployment guide</h1>
+  <p class="lede">Get your own copy running on your computer. <b>No technical experience needed.</b> Three quick installs, then the system sets <i>itself</i> up — about 30–45 minutes, most of it waiting on downloads.</p>
+  <div class="callout"><b>Don't want to do the setup yourself?</b> Whoever gave you this system can do steps 1–4 for you on a screen-share in about half an hour. You only ever need the chat (step 5 onward).</div>
+
+  <div class="step"><div class="sh">Step 1 — Install Python</div>
+    <p>This runs the system's behind-the-scenes scripts.</p>
+    <ol>
+      <li>Go to <a href="https://www.python.org/downloads/">python.org/downloads</a> and click the big yellow <b>Download Python</b> button.</li>
+      <li>Open the file you just downloaded.</li>
+      <li><b>IMPORTANT</b>: on the first screen, tick <b>"Add Python to PATH"</b> (bottom of the window) <i>before</i> clicking <b>Install Now</b>. This one tick prevents the most common setup problem.</li>
+      <li>Let it finish, then click Close.</li>
+    </ol>
+  </div>
+
+  <div class="step"><div class="sh">Step 2 — Install Claude Code</div>
+    <p>This is the app you'll actually use.</p>
+    <ul>
+      <li>Follow Anthropic's official installer: <a href="https://code.claude.com/docs/en/setup#set-up-on-windows">code.claude.com/docs/en/setup</a> (Windows).</li>
+      <li>New to Claude Code? The 5-minute quickstart: <a href="https://code.claude.com/docs/en/quickstart">code.claude.com/docs/en/quickstart</a>.</li>
+    </ul>
+  </div>
+
+  <div class="step"><div class="sh">Step 3 — Get the system's files</div>
+    <p>You'll have received the system one of two ways — follow whichever matches:</p>
+    <p><b>A — You were sent a folder or a ZIP file.</b> If it's a ZIP, right-click → <b>Extract All</b>. Move the folder into your <b>OneDrive</b>/<b>Dropbox</b> folder (keeps it backed up) and rename it <code>Marketing AI System</code>.</p>
+    <p><b>B — Download it from GitHub</b> (no GitHub account needed): open <a href="https://github.com/abraun64/soundtrak-ai-marketing-system">github.com/abraun64/soundtrak-ai-marketing-system</a>, click the green <b>&lt; &gt; Code</b> button → <b>Download ZIP</b>, then extract and move it as in A.</p>
+    <p>Either way you end up with one folder called <code>Marketing AI System</code> full of files — that folder <i>is</i> your system.</p>
+  </div>
+
+  <div class="step"><div class="sh">Step 4 — Let the system set itself up</div>
+    <p>Open <b>Claude Code</b> and open the folder from Step 3 as your project. In the chat box, type:</p>
+    <p style="font-size:18px"><b>set yourself up</b></p>
+    <p>It installs the last few pieces it needs, checks everything works, and turns on <b>automatic backup</b>. If anything's missing it tells you the one thing to fix in plain language. When it says <b>READY</b>, you're done with setup.</p>
+  </div>
+
+  <div class="step"><div class="sh">Step 5 — Start using it</div>
+    <p>In the chat, type <b>"Onboard &lt;your business name&gt;"</b>. The system interviews you about your business — voice, look, where you publish — and builds your foundation (required before any campaign can start). Then say <b>"start a campaign"</b>. Full walk-through: <a href="getting-started.html">Getting started</a>.</p>
+  </div>
+
+  <h2>If the health check shows red</h2>
+  <p>Step 4 runs a "doctor" that checks your setup. A red <code>[FAIL]</code> line always prints the exact fix. The usual culprits:</p>
+  <table>
+    <thead><tr><th>Red line</th><th>What it means</th><th>Fix</th></tr></thead>
+    <tbody>
+      <tr><td><code>python module: … MISSING</code></td><td>a helper library didn't install</td><td>type <b>"set yourself up"</b> again — it retries</td></tr>
+      <tr><td><code>playwright: chromium not installed</code></td><td>the preview browser didn't download</td><td>same — say "set yourself up" again</td></tr>
+      <tr><td>"python is not recognised"</td><td>Python installed without "Add to PATH"</td><td>re-run the Step 1 installer and <b>tick "Add Python to PATH"</b></td></tr>
+    </tbody>
+  </table>
+
+  <h2>Do I need a GitHub account?</h2>
+  <p><b>No</b> — not to download the system, and not to use it day to day. GitHub shows up in two <i>separate</i> ways, and only the optional one needs an account of your own:</p>
+  <table>
+    <thead><tr><th>GitHub touchpoint</th><th>Whose it is</th><th>Account needed?</th></tr></thead>
+    <tbody>
+      <tr><td>The public page you download from (Step 3B)</td><td>the people who make the system</td><td><b>No</b> — anyone can download</td></tr>
+      <tr><td>An optional online backup of your own work</td><td><b>yours</b> (a free private repo)</td><td>Yes — but only if you want it</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Backup &amp; upgrades (the short version)</h2>
+  <ul>
+    <li><b>Backup is automatic</b> once set up (Step 4): your work saves at the end of every session. The safety net is that local save <b>plus</b> your <b>OneDrive/Dropbox</b> folder — an offsite copy with zero extra setup. That's enough for most people, no GitHub account required.</li>
+    <li><b>Want a separate online backup in your own account?</b> Optional — create a free private repo, then say <b>"set yourself up"</b> again and the system connects it.</li>
+    <li><b>Upgrades</b>: your copy is yours and keeps working as-is — you never <i>have</i> to upgrade. If a newer version is released, whoever gave you the system can hand you the update.</li>
+  </ul>
+
+  <p class="footer"><a class="backlink" href="help.html">← Help &amp; guides</a> &nbsp;·&nbsp; Soundtrak AI Marketing System</p>
+</div>
+</body>
+</html>
