@@ -2,7 +2,7 @@
 
 **The system's own dashboard.** Everything in the system lives in one of the document classes below. If you're cold-starting and don't know where something is, start here.
 
-**Last updated**: 2026-06-24
+**Last updated**: 2026-06-30
 **Version**: v2
 
 > **Kept fresh by `nav-audit`** (`.claude/skills/nav-audit/nav_audit.py`) — diffs this index against the specs/skills/agents/playbooks on disk and flags anything missing, any dead link, a stale stamp, and the oldest-untouched docs. It runs as part of `system-smoke-test` (so any "run smoke test" catches index drift) and on demand ("run nav audit"). When you add a spec/skill/agent/playbook, add a row here — the audit will catch it if you forget.
@@ -58,6 +58,7 @@ Each section answers: *what kind of thing is this, when do you read it, and wher
 | **Data Architecture spec** | Storage model — markdown authoritative, HTML rendered, OneDrive + Git dual-backed; render-pipeline contract. | `docs/specs/data-architecture.md` |
 | **System Manager spec** | The System-layer owner: backlog + idea inbox + audit schema, the operator dashboard (To Do split "Needs you" / "AI can action" + audit history), and the capture / triage / retro / groom workflows. | `docs/specs/system-manager.md` |
 | **Agent I/O Contract spec** | Structured dispatch + return envelopes for CM↔agent handoffs (machine-checkable orchestration: ship-file existence, explicit verdicts, cost capture). DESIGN ONLY — Step 1 of SYS-004's staged rollout. | `docs/specs/agent-io-contract.md` |
+| **Standalone Deployment spec** | Retro-5: packaging the system as a clean single-tenant "Seed" — ship/tenant/personal manifest, the `build_seed` allowlist cut + leak scan, Phase-0 hard gate, install doctor, the phased plan + safety model. | `docs/specs/standalone-deployment.md` |
 
 ---
 
@@ -71,6 +72,9 @@ Each section answers: *what kind of thing is this, when do you read it, and wher
 | **Client operator onboarding** | Day-1 handoff session + 4-week standby for tenant-self-runs or handoff models. | Phase 5 execution for non-the operator-runs tenants | `docs/playbooks/client-operator-onboarding.md` |
 | **Pre-sync hygiene** | Checklist before running sync-tenant.ps1. Prevents cross-tenant leakage and dirty master propagation. | Before any master → tenant sync | `docs/playbooks/pre-sync-hygiene.md` |
 | **Sync master to tenant** | PowerShell + rsync mechanics for propagating master to a tenant's OneDrive. | Phase 6 setup | `docs/playbooks/sync-master-to-tenant.md` |
+| **Deployment guide** | Non-technical install/setup runbook. **Superseded by `docs/guide/deployment-guide.html`** (Soundtrak HTML); kept as source. | Reference only | `docs/playbooks/deployment-guide.md` |
+| **Onboarding checklist** | First-run getting-started checklist. **Superseded by `docs/guide/getting-started.html`**; kept as source. | Reference only | `docs/playbooks/onboarding-checklist.md` |
+| **FAQ** | Self-service Q&A. **Superseded by `docs/guide/help.html`** (Help & Guides hub); kept as source. | Reference only | `docs/playbooks/faq.md` |
 
 ---
 
@@ -112,7 +116,12 @@ Each section answers: *what kind of thing is this, when do you read it, and wher
 | **system-drift-watcher** | Cross-campaign drift scan (stale dashboards · zombie To-Do rows · in-flight Producers · stale cross-refs). | "check system drift", "anything stale?" |
 | **cm-audit** | Surface-currency audit — every operator surface (dashboard/gallery/tasks/index/tenant-home) re-rendered after its data source changed. | "run cm audit", "are the surfaces current?" |
 | **nav-audit** | Keeps this index honest — diffs `NAVIGATION_INDEX.md` against specs/skills/agents/playbooks on disk; flags missing entries, dead links, stale stamp + oldest docs. | "run nav audit", "is the navigation index fresh?" |
-| **system-manager** | Owner of the System layer — maintains the system-improvement backlog + idea inbox + audit history and the kanban operator dashboard, independent of any campaign. Capture / triage / retro / groom. | "system idea: …", "triage the inbox", "run a system retro", "/system-manager" |
+| **system-manager** | Owner of the System layer — maintains the system-improvement backlog + idea inbox + audit history and the operator dashboard (To Do split Needs-you / AI-can-action + audit history), independent of any campaign. Capture / triage / retro / groom. | "system idea: …", "triage the inbox", "run a system retro", "/system-manager" |
+| **thought-leadership** | the operator's content workflow: a pasted concept / principle / research → LinkedIn + Substack pieces (orchestrates the three skills below). | "new concept", "let's do a piece on X", "run the feedback loop" |
+| **behavior-gap-sketch** | Distils raw text into one Carl Richards / Behavior-Gap visual metaphor + a copy-paste image prompt. | `/carl-image` |
+| **linkedin-post** | Turns the same principle into a high-impact LinkedIn post, paired with the sketch. | `/image-social-post` |
+| **long-form** | Turns the same principle into a feature-length Substack article. | `/long-form` |
+| **publish-soundtrak-article-website** | Publishes a finished article to soundtrakconsulting.com/thinking/ (docx + hero image + Substack URL). | "publish article", "publish to soundtrak" |
 
 ---
 
@@ -164,7 +173,7 @@ Each section answers: *what kind of thing is this, when do you read it, and wher
 | **operator_actions.py** | Scans every `assets/*/asset.yaml` in a campaign for pending `operator_actions:` entries and renders them as the dashboard's auto-generated To Do block. Single source of truth — dashboard To Do is now derived, not hand-authored. | `.claude/skills/render-html/operator_actions.py` |
 | **status-propagator** | Single command updates asset status across all the layers that gallery + dashboard read from (asset.yaml + numeric-prefix .md + preview.md + HTMLs + gallery + dashboard). Also handles `--task <id> --done` to mark individual operator-actions complete. Replaces the manual ~9-touch-point discipline. | `.claude/skills/status-propagator/propagate.py` · [SKILL.md](../.claude/skills/status-propagator/SKILL.md) |
 | **check-state** | Read-only drift detector. Walks every asset folder in one campaign or all campaigns and reports any disagreement between yaml status, numeric-prefix asset record, preview.md, and dashboard mentions of approved assets. Pair with status-propagator to fix what it finds. | `.claude/skills/check-state/check.py` · [SKILL.md](../.claude/skills/check-state/SKILL.md) |
-| **build-dashboard.py** | Generates `system/dashboard.html` (the System Operator Dashboard): kanban (To Do P1/P2/P3 · In Progress · Done) + priority filters + triage lightbox + audit history. Reads the `system/` data store; inlines system.css. Re-run after any backlog/ideas/audit edit. | `.claude/skills/system-manager/build-dashboard.py` |
+| **build-dashboard.py** | Generates `system/dashboard.html` (the System Operator Dashboard): To Do split into Needs-you / AI-can-action (in_progress as a tag) + a prominent inbox CTA → triage lightbox + audit history. Reads the `system/` data store; inlines system.css. Re-run after any backlog/ideas/audit edit. | `.claude/skills/system-manager/build-dashboard.py` |
 | **system/ data store** | The System-layer source of truth: `backlog.yaml` (tickets) · `ideas.yaml` (idea inbox) · `audit-log.yaml` (history) → `dashboard.html` (generated). In-repo (campaigns/ is a separate repo). | `system/` |
 | **repo_paths.py** | Canonical data-root resolver: `data_root()` / `is_worktree()`. Lets diagnostics + the System Manager resolve campaigns/ · system/ · tenant-brand/ to the MAIN checkout when run from a `.claude/worktrees/*` checkout (SYS-002). | `.claude/lib/repo_paths.py` |
 | **weekly-digest.py** | SYS-005 — read-only weekly groom-lite: runs diagnostics, summarises open work + inbox, auto-files new failures as deduped ideas, writes `system/digests/<date>.md`. Built for a weekly schedule. | `.claude/skills/system-manager/weekly-digest.py` |

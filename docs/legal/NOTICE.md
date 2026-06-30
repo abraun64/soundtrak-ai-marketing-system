@@ -2,11 +2,11 @@
 
 > ⚠️ **DRAFT — for counsel review.**
 
-Soundtrak AI Marketing System
+Soundtrak AI Studio
 Copyright © 2026 Soundtrak Consulting.
 
 Licensed under the PolyForm Internal Use License 1.0.0 — see `LICENSE.md`.
-"Soundtrak", "Soundtrak AI Marketing System", and the Soundtrak logo are trademarks of
+"Soundtrak", "Soundtrak AI Studio", and the Soundtrak logo are trademarks of
 Soundtrak Consulting — see `TRADEMARK.md`.
 
 Anyone who keeps, runs, or modifies a copy of the software must retain this notice and the

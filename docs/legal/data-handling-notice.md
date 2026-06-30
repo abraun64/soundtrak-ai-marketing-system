@@ -1,4 +1,4 @@
-# Data handling — Soundtrak AI Marketing System
+# Data handling — Soundtrak AI Studio
 
 > ⚠️ **DRAFT — for counsel review. Not legal advice.**
 >

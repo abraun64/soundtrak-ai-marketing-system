@@ -114,6 +114,7 @@ RULE 2 — BANNED WORDS: [N] violations fixed — [list the words]
 RULE 3 — PUNCHY PAIRS: [N] violations fixed
 RULE 4 — RESTATEMENTS: [N] violations fixed
 RULE 5 — RECAP CLOSING: [fixed / no violation]
+RULE 6 — HOLLOW CONTRAST (many-say-few-do + significance kicker): [N] violations fixed
 TENANT-PERMITTED (left as-is): [N] — [list each named device / carve-out respected, e.g. "four-word declarative (§2 #9)"]
 
 [Corrected content]

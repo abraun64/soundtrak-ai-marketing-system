@@ -357,10 +357,30 @@ DASHBOARD_JS = """
 """
 
 
+def warn_id_collisions(backlog: list, ideas: list) -> None:
+    """SYS-025 belt-and-braces: shout if two records share an id, or an id is live in
+    both stores. The board rebuilds after every change, so a worktree fork that re-mints
+    an id surfaces here the moment it lands — non-fatal so the operator is never blocked."""
+    b_ids = [i.get("id") for i in backlog if i.get("id")]
+    i_ids = [i.get("id") for i in ideas if i.get("id")]
+    problems = []
+    for store, ids in (("backlog.yaml", b_ids), ("ideas.yaml", i_ids)):
+        local = set()
+        for x in ids:
+            if x in local:
+                problems.append(f"id {x} appears more than once in {store}")
+            local.add(x)
+    for x in sorted(set(b_ids) & set(i_ids)):
+        problems.append(f"id {x} is live in BOTH backlog.yaml and ideas.yaml")
+    for p in problems:
+        print(f"  WARN SYS-025 id collision: {p}", file=sys.stderr)
+
+
 def build() -> Path:
     backlog = load_yaml(SYSTEM_DIR / "backlog.yaml", "items")
     ideas = load_yaml(SYSTEM_DIR / "ideas.yaml", "items")
     audit = load_yaml(SYSTEM_DIR / "audit-log.yaml", "entries")
+    warn_id_collisions(backlog, ideas)
 
     open_items = [i for i in backlog if i.get("status") in ("todo", "in_progress")]
     needs_you = [i for i in open_items if needs_of(i) == "you"]

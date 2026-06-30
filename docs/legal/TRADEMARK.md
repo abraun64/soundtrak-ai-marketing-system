@@ -4,11 +4,11 @@
 
 The software's license (PolyForm Internal Use License 1.0.0, see `LICENSE.md`) covers the
 **code only**. It grants **no rights** to Soundtrak Consulting's names, logos, or brand —
-including "Soundtrak", "Soundtrak AI Marketing System", and the Soundtrak marks (the "Marks").
+including "Soundtrak", "Soundtrak AI Studio", and the Soundtrak marks (the "Marks").
 The Marks remain the property of Soundtrak Consulting.
 
 **You may:**
-- State factually that your instance is "built on the Soundtrak AI Marketing System" or "powered by Soundtrak", in plain text, without styling it as your own brand.
+- State factually that your instance is "built on the Soundtrak AI Studio" or "powered by Soundtrak", in plain text, without styling it as your own brand.
 
 **You may not, without Soundtrak Consulting's prior written permission:**
 - Use the Marks (or anything confusingly similar) as, or as part of, your own product name, service name, company name, logo, or domain name.

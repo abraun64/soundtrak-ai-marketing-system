@@ -124,10 +124,36 @@ If yes, it is a recap and must be cut or rewritten.
 
 ---
 
+## RULE 6 — THE HOLLOW CONTRAST (added 2026-06-30)
+
+AI borrows the *rhythm* of an insight to stand in for the insight. Classic form, usually three sentences:
+
+> "A lot of leaders talk about accountability. Fewer build the structures that make it real. The difference shows up fast."
+
+Two linked moves, flag either, flag both:
+
+**6a — The "many say, few do" antithesis.** A balanced contrast between what "a lot of / most" people SAY and what "fewer / the few" actually DO. It reads as insight but is empty:
+- **Portable** — swap the topic noun (accountability → culture → focus → strategy → customer-centric) and it still works unchanged. A real observation is welded to its subject; a template floats free.
+- **Fake data** — "a lot of" / "fewer" assert a distribution with nothing measured behind it.
+- **Flattery** — it sorts the reader into "the few" for free.
+- **Truism** — "talking is easier than doing" is true of everything.
+
+**6b — The vague significance kicker.** A short declarative that claims the contrast matters without saying how: "The difference shows up fast." / "That gap is everything." / "It changes everything." / "That's where it counts." A consequence with the consequence removed.
+
+**Two tests:**
+- *Portability (6a):* can you swap the topic noun and keep the sentence? If yes, it is a template, not a thought.
+- *Specificity (6b):* does the kicker name an actual consequence — what shows up, where, how much? If not, it is empty.
+
+**Fix:** name the real thing and the real difference, with a concrete example or number. *"A lot of leaders talk about accountability. Fewer build the structures that make it real. The difference shows up fast."* → *"Most leadership teams have 'accountability' on a slide and nothing behind it: no owner per outcome, no date, no consequence when it slips. The teams that add those three close issues in days; the rest relitigate them next meeting."* If you cannot make it specific, the sentence was carrying nothing — cut it.
+
+**Limit: zero.** This pattern is never the strongest version of the point. (The setup half is allowed *only* when the very next sentences cash it out into concrete specifics and there is no vague kicker.)
+
+---
+
 ## HOW TO RUN THE SUB-EDIT
 
 1. Read the full content of the file.
-2. Work through Rules 1–5 in order. For each rule, list every violation found.
+2. Work through Rules 1–6 in order. For each rule, list every violation found.
 3. If violations exist, fix them in the content.
 4. Check that fixes haven't introduced new violations.
 5. Report: number of violations found per rule, what was changed, and the corrected text.
@@ -146,3 +172,4 @@ If yes, it is a recap and must be cut or rewritten.
 | Mechanical staccato series (3b) | Never | Never |
 | Restatements | Zero | Zero |
 | Recap closing | Not permitted | Not permitted |
+| Hollow contrast (many-say-few-do + kicker) | Zero | Zero |

@@ -1,4 +1,4 @@
-# Changelog — Soundtrak AI Marketing System
+# Changelog — Soundtrak AI Studio
 
 All notable changes to the **system** (the product) are recorded here — the public release log.
 Each version is a clean Seed cut published to GitHub. Format follows
@@ -10,7 +10,18 @@ System Manager; see "Cutting a release" at the foot of this file.
 
 ## [Unreleased]
 
-_Nothing yet — system changes land here after v1.0.0 is cut._
+### Fixed
+- **Campaign To Do shows only current-stage tasks.** The dashboard To Do and the
+  cross-campaign tasks queue no longer surface tasks for phases the campaign hasn't
+  reached yet (e.g. launch or cadence steps while still in asset production) — only the
+  current stage's tasks, plus any still-open earlier work.
+- **A malformed campaign no longer blanks the campaigns index.** A bad `campaign.yaml`
+  used to crash the Active-campaign list so the index rendered empty; the index now
+  tolerates the bad entry, and any unexpected render failure degrades to a basic roster
+  with a warning instead of silently showing nothing.
+- **System Manager backlog/ideas/audit resolve to one canonical store.** Edits and id
+  allocation always target the main checkout (never a per-worktree copy), with a
+  duplicate-id guard — preventing ticket-id collisions when work spans git worktrees.
 
 ## [1.0.0] — 2026-06-29
 
@@ -39,6 +50,6 @@ _For the maintainer (the System Manager owns this):_
 1. Make sure **[Unreleased]** lists every system-layer change since the last cut.
 2. Rename **[Unreleased]** to the new version with today's date, and add a fresh empty
    **[Unreleased]** above it. Bump per SemVer — MAJOR (breaking) · MINOR (feature) · PATCH (fix).
-3. Tag the commit: `git tag -a vX.Y.Z -m "Soundtrak AI Marketing System vX.Y.Z"`.
+3. Tag the commit: `git tag -a vX.Y.Z -m "Soundtrak AI Studio vX.Y.Z"`.
 4. Cut + scan the Seed: `python .claude/lib/build_seed.py --out <dir> --git`.
 5. Eyeball it, then push the Seed to the public repo — the human-gated step.

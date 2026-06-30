@@ -24,6 +24,16 @@ No speculative gold-plating.
 All under `system/`. The YAML is authoritative; the HTML is generated (same
 data-driven contract as the campaign operator surfaces).
 
+**Canonical store (SYS-025).** These files are git-tracked, so every `.claude/worktrees/*`
+checkout holds its own copy. The canonical store is the **main checkout** (`repo_paths.data_root`).
+A write made to a worktree-local copy silently forks the backlog and re-mints ids the main store
+has already taken — the root cause of the 2026-06-29 SYS-018/019 collision. All reads and writes
+(by the agent and by helpers) resolve through `sysdata.py`, which prints the canonical absolute
+paths, allocates the next free id by scanning backlog + ideas + the append-only audit log (so a
+promoted/deleted id is never reused), and guards against an existing duplicate. `build-dashboard.py`
+runs the same guard on every render. Ids are unique + monotonic; legacy lettered ids (`SYS-D1/D2`)
+are historical and never re-minted.
+
 ### `backlog.yaml` — tickets
 ```
 items:

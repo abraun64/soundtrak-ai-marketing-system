@@ -48,7 +48,9 @@ All under `system/`. Edit the YAML; the HTML is generated.
 | `system/audit-log.yaml` | Append-only state-change log (newest first) |
 | `system/dashboard.html` | **Generated** — the operator surface. Never hand-edit. |
 
-IDs: tickets are `SYS-NNN`, ideas are `IDEA-NNN`. Allocate the next free number.
+IDs: tickets are `SYS-NNN`, ideas are `IDEA-NNN`. **Never eyeball the next free number** —
+get it from the guard (below), which scans backlog + ideas + the append-only audit log, so an
+id that was promoted or deleted from one file but lives on in the history can't be re-minted.
 
 Priority: **P1** urgent (blocks correct operation / erodes operator trust) ·
 **P2** debt (real friction, not blocking) · **P3** opportunistic.
@@ -64,6 +66,18 @@ specs, the System Manager itself), **tenant** (brand context / playbook / gold-s
 or **campaign** (dashboard / gallery / per-step-brief). Defaults to `system`. Shown as a tag
 on each open card — a label, not a filter (the priority filters were removed).
 
+> **Canonical-store rule (hard, SYS-025):** these three YAML files are git-tracked, so
+> every worktree has its OWN copy. The canonical store is in the **main checkout** — a write
+> made to a `.claude/worktrees/*` copy silently forks the backlog and re-mints ids main has
+> already taken (the 2026-06-29 SYS-018/019 collision). **Before any capture / triage / retro
+> write, run the resolver** and edit the absolute paths it prints — never a worktree-local copy:
+> ```
+> python .claude/skills/system-manager/sysdata.py paths        # canonical absolute paths (+ worktree warning)
+> python .claude/skills/system-manager/sysdata.py next-id IDEA  # next free IDEA id (or SYS)
+> python .claude/skills/system-manager/sysdata.py check         # guard: duplicate / cross-store id collision (exit 1)
+> ```
+> `build-dashboard.py` runs the same guard on every render, so a fork surfaces immediately.
+
 > **Re-render rule (hard):** after ANY write to backlog.yaml / ideas.yaml /
 > audit-log.yaml, run:
 > ```
@@ -77,7 +91,7 @@ on each open card — a label, not a filter (the priority filters were removed).
 ### 1. Capture  ·  "system idea: X" / `/system-manager capture: X`
 The operator gives one line. **You** write the full record while the context is
 fresh — never make the operator write the paragraph.
-1. Append to `ideas.yaml` with: `id` (next IDEA-NNN), `title`, `summary` (one line),
+1. Append to `ideas.yaml` (canonical path + id from `sysdata.py`) with: `id` (next IDEA-NNN), `title`, `summary` (one line),
    `description` (the what + why, drawn from the current conversation so it triages
    cold later), `raised_by` (operator name, or the diagnostic/retro that surfaced
    it), `date` (today, absolute), `source`.
@@ -87,8 +101,8 @@ fresh — never make the operator write the paragraph.
 ### 2. Triage  ·  `/system-manager triage [IDEA-id action [P]]`
 The gate between raw idea and committed work. Batched, not at capture time.
 For each idea (or the one named), with the operator's decision:
-- **promote** → create a `SYS-NNN` ticket in `backlog.yaml` (`status: todo`, the
-  given priority, carry over description/raised_by/date/source, sharpen the title),
+- **promote** → create a `SYS-NNN` ticket in `backlog.yaml` (id from `sysdata.py next-id SYS`,
+  `status: todo`, the given priority, carry over description/raised_by/date/source, sharpen the title),
   remove the idea from `ideas.yaml`, audit `triaged`.
 - **merge** → fold into the named existing ticket, remove the idea, audit `merged`.
 - **kill** → remove the idea with a one-line reason, audit `killed`.

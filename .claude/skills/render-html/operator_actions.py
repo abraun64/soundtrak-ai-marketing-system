@@ -509,6 +509,39 @@ def _phase_plan_status(campaign_dir: "Path", stem: str):
     return "draft"
 
 
+def _phase_num(phase) -> "int | None":
+    """Leading integer of a phase id ('1b' -> 1, '4' -> 4, '' -> None) for ordering."""
+    m = re.match(r"\s*(\d+)", str(phase if phase is not None else ""))
+    return int(m.group(1)) if m else None
+
+
+def _current_phase_num(campaign_dir: "Path") -> "int | None":
+    """Numeric id of the campaign's CURRENT phase = the first phase that isn't done.
+    None when there are no phases or all are done — the caller then does not filter."""
+    phases = scan_campaign_yaml(campaign_dir).get("phases") or []
+    for p in phases:
+        if isinstance(p, dict) and not _phase_done(p, campaign_dir):
+            return _phase_num(p.get("id"))
+    return None
+
+
+def _drop_future_phase_actions(actions: list, campaign_dir: "Path") -> list:
+    """The To Do shows only what the operator must do at the stage the campaign is up to:
+    drop any action whose phase is LATER than the current phase (e.g. Phase 5 launch +
+    Phase 6 cadence steps while still in Phase 4). Earlier-phase actions still open are
+    KEPT (genuinely overdue); actions with no phase are kept. Operator rule 2026-06-30."""
+    cur = _current_phase_num(campaign_dir)
+    if cur is None:
+        return actions
+    kept = []
+    for a in (actions or []):
+        pn = _phase_num(a.get("phase"))
+        if pn is not None and pn > cur:
+            continue
+        kept.append(a)
+    return kept
+
+
 def collapse_phase_plan_actions(actions: list, campaign_dir: "Path") -> list:
     """For task-LIST surfaces only: drop each phase's blocks_launch step-actions when
     that phase's plan doc exists (they live in the doc), and prepend ONE pointer row
@@ -627,6 +660,7 @@ def _rec_pointer_footer(recs: list, link_prefix: str = "") -> str:
 
 def render_actions_table_md(actions: list[dict], campaign_dir: "Path") -> str:
     """Dashboard To Do (OPERATOR_ACTIONS_AUTO) — same styled table as tasks.html."""
+    actions = _drop_future_phase_actions(actions, campaign_dir)
     actions = collapse_phase_plan_actions(actions, campaign_dir)
     actions, rec_ptrs = _split_rec_pointers(actions)
     rec_footer = _rec_pointer_footer(rec_ptrs, "")
@@ -1075,7 +1109,8 @@ def render_cross_campaign_actions_md(campaigns: list[dict]) -> str:
             continue
         slug = camp["slug"]
         phases = camp_yaml.get("phases") or []
-        actions = collapse_phase_plan_actions(camp["actions"], camp["campaign_dir"])
+        actions = _drop_future_phase_actions(camp["actions"], camp["campaign_dir"])
+        actions = collapse_phase_plan_actions(actions, camp["campaign_dir"])
         actions, rec_ptrs = _split_rec_pointers(actions)
         assets = camp["assets"]
         total_assets = len(assets)
@@ -1217,6 +1252,34 @@ def _tenant_breadcrumb_md(campaign_dir: Path) -> str:
 
 
 def render_campaign_index_md(campaigns: list[dict]) -> str:
+    """Resilient wrapper. One malformed campaign.yaml must NEVER blank the whole
+    Active index — it did once (a bare-string `artifacts:` raised AttributeError, the
+    cross-surface inject swallowed it, and the unprocessed marker rendered as nothing).
+    On any failure, degrade to a minimal roster (name + dashboard link) and warn loudly,
+    so the operator's most important surface is never silently empty."""
+    if not campaigns:
+        return "_(no campaigns found)_"
+    try:
+        return _render_campaign_index_impl(campaigns)
+    except Exception as e:  # noqa: BLE001 — degrade, never blank
+        import html as _html
+        import sys as _sys
+        print(f"  WARN campaign index degraded ({type(e).__name__}: {e}); showing a basic "
+              "roster — fix the offending campaign.yaml", file=_sys.stderr)
+        rows = []
+        for c in campaigns:
+            c = c if isinstance(c, dict) else {}
+            cy = c.get("campaign_yaml")
+            cy = cy if isinstance(cy, dict) else {}
+            name = _html.escape(str(cy.get("nickname") or c.get("name") or c.get("slug") or "campaign"))
+            slug = _html.escape(str(c.get("slug") or ""))
+            rows.append(f'<li><a href="{slug}/dashboard.html">{name}</a></li>')
+        return ("> ⚠ **Some campaign data is malformed** — showing a basic roster. "
+                "Check the render log for the campaign at fault.\n\n"
+                "<ul>" + "".join(rows) + "</ul>")
+
+
+def _render_campaign_index_impl(campaigns: list[dict]) -> str:
     """Render a roster of every campaign with derived summary stats:
        - Asset count (Approved / total)
        - Launch blockers pending
@@ -1303,6 +1366,14 @@ def render_campaign_index_md(campaigns: list[dict]) -> str:
             if not _phase_done(p, camp_dir):
                 continue
             for art in (p.get("artifacts") or []):
+                # Artifacts SHOULD be mappings ({title, href}); tolerate a bare string
+                # (some campaign.yaml authored `artifacts: [brief.md]`) by treating it as
+                # the href. Anything else is skipped — never crash the whole index on one
+                # malformed entry.
+                if isinstance(art, str):
+                    art = {"href": art}
+                elif not isinstance(art, dict):
+                    continue
                 href = str(art.get("href") or "")
                 if not href or href.startswith("#"):
                     continue

@@ -1,6 +1,6 @@
-# Soundtrak AI Marketing System
+# Soundtrak AI Studio
 
-*from Soundtrak Consulting.*
+*The AI studio that 10Xs your marketing — from Soundtrak Consulting.*
 
 A multi-agent marketing system built on Claude Code. A **Campaign Manager** skill
 orchestrates specialist agents (Creative Director, Brand Manager, Producer, Governance,

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Deployment guide — Soundtrak AI Marketing System</title>
+<title>Deployment guide — Soundtrak AI Studio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -11,17 +11,25 @@
 </head>
 <body>
 <nav class="topnav">
-  <div class="brandline"><span class="dot"></span> Soundtrak AI Marketing System</div>
+  <div class="brandline"><span class="dot"></span> Soundtrak AI Studio</div>
   <div class="navlinks">
     <a href="help.html">Help &amp; guides</a>
     <a class="here" href="deployment-guide.html">Deployment</a>
-    <a href="getting-started.html">Getting started</a>
-    <a href="../training/index.html">Training</a>
+    <a href="operator-guide.html">Operator guide</a>
   </div>
 </nav>
 <div class="wrap">
   <h1>Deployment guide</h1>
-  <p class="lede">Get your own copy running on your computer. <b>No technical experience needed.</b> Three quick installs, then the system sets <i>itself</i> up — about 30–45 minutes, most of it waiting on downloads.</p>
+  <p class="lede">Get your own copy running on your computer. <b>No coding, and no experience with Claude needed.</b> A few quick installs, then the system sets <i>itself</i> up — about 30–45 minutes, most of it waiting on downloads.</p>
+
+  <div class="callout"><b>Never used Claude before? Read this first.</b> Your system runs inside <b>Claude Code</b> — an AI assistant that lives on your computer. You use it by <b>typing plain‑English requests</b> (like messaging a very capable colleague); it does the work and shows you — <b>you never write code yourself</b>. Three things to know up front:
+    <ul style="margin:8px 0 0 0">
+      <li>You'll need a <b>Claude subscription</b> — a Claude <b>Pro</b> or <b>Max</b> plan (the same account that runs Claude.ai). It isn't free.</li>
+      <li>You type your requests and read its replies in a window (a "terminal"). Don't be put off by the word — <b>you only ever type normal sentences.</b></li>
+      <li>Before it ever changes a file or runs anything, it <b>shows you and asks permission</b>. Nothing happens without your OK.</li>
+    </ul>
+    This guide installs everything once. After that, you just chat.</div>
+
   <div class="callout"><b>Don't want to do the setup yourself?</b> Whoever gave you this system can do steps 1–4 for you on a screen-share in about half an hour. You only ever need the chat (step 5 onward).</div>
 
   <div class="step"><div class="sh">Step 1 — Install Python</div>
@@ -34,29 +42,64 @@
     </ol>
   </div>
 
-  <div class="step"><div class="sh">Step 2 — Install Claude Code</div>
-    <p>This is the app you'll actually use.</p>
-    <ul>
-      <li>Follow Anthropic's official installer: <a href="https://code.claude.com/docs/en/setup#set-up-on-windows">code.claude.com/docs/en/setup</a> (Windows).</li>
-      <li>New to Claude Code? The 5-minute quickstart: <a href="https://code.claude.com/docs/en/quickstart">code.claude.com/docs/en/quickstart</a>.</li>
-    </ul>
+  <div class="step"><div class="sh">Step 2 — Install Claude Code &amp; sign in</div>
+    <p><b>Claude Code is the app you'll actually use</b> — the AI you type your requests to.</p>
+    <ol>
+      <li><b>Get a Claude account first.</b> You need a paid plan — Claude <b>Pro</b> or <b>Max</b> (the same login as Claude.ai). If you don't have one, sign up at <a href="https://claude.com/pricing">claude.com/pricing</a>.</li>
+      <li><b>Install Claude Code</b> using Anthropic's official guide for Windows: <a href="https://code.claude.com/docs/en/setup">code.claude.com/docs/en/setup</a>.</li>
+      <li><b>Do the 5‑minute quickstart</b> — it shows a first‑timer exactly what to click: <a href="https://code.claude.com/docs/en/quickstart">code.claude.com/docs/en/quickstart</a>. <b>The first time you open Claude Code it opens your browser to log in</b> — sign in with your Pro/Max account. You only do this once.</li>
+    </ol>
   </div>
 
-  <div class="step"><div class="sh">Step 3 — Get the system's files</div>
-    <p>You'll have received the system one of two ways — follow whichever matches:</p>
-    <p><b>A — You were sent a folder or a ZIP file.</b> If it's a ZIP, right-click → <b>Extract All</b>. Move the folder into your <b>OneDrive</b>/<b>Dropbox</b> folder (keeps it backed up) and rename it <code>Marketing AI System</code>.</p>
-    <p><b>B — Download it from GitHub</b> (no GitHub account needed): open <a href="https://github.com/abraun64/soundtrak-ai-marketing-system">github.com/abraun64/soundtrak-ai-marketing-system</a>, click the green <b>&lt; &gt; Code</b> button → <b>Download ZIP</b>, then extract and move it as in A.</p>
-    <p>Either way you end up with one folder called <code>Marketing AI System</code> full of files — that folder <i>is</i> your system.</p>
+  <div class="step"><div class="sh">Step 3 — Download the system from GitHub</div>
+    <p>The whole system is one folder of files, hosted on GitHub. <b>You don't need a GitHub account</b> — anyone can download it.</p>
+    <ol>
+      <li>Open <a href="https://github.com/abraun64/soundtrak-ai-marketing-system">github.com/abraun64/soundtrak-ai-marketing-system</a>.</li>
+      <li>Click the green <b>&lt; &gt; Code</b> button (top‑right of the file list), then <b>Download ZIP</b>.</li>
+      <li>The ZIP saves into your <b>Downloads</b> folder. Right‑click it → <b>Extract All…</b> → <b>Extract</b>.</li>
+      <li><b>Move the extracted folder into your OneDrive (or Dropbox) folder</b>, then rename it <code>Marketing AI System</code>. This step matters: keeping it inside OneDrive/Dropbox gives you an automatic offsite backup of everything you do, with no extra setup.</li>
+    </ol>
+    <div class="callout"><b>Where it should end up:</b> something like <code>C:\Users\&lt;you&gt;\OneDrive\Marketing AI System</code>. That one folder <i>is</i> your system — everything lives inside it.</div>
   </div>
 
-  <div class="step"><div class="sh">Step 4 — Let the system set itself up</div>
-    <p>Open <b>Claude Code</b> and open the folder from Step 3 as your project. In the chat box, type:</p>
+  <div class="step"><div class="sh">Step 4 — Open your system in Claude Code</div>
+    <p>Claude Code always works <i>inside one folder</i>. You point it at your <code>Marketing AI System</code> folder so it knows where your system lives.</p>
+    <ol>
+      <li>Open <b>Claude Code</b>.</li>
+      <li><b>Open the <code>Marketing AI System</code> folder as your project</b> — in the desktop app choose <b>Open folder</b> and pick it; if you use the terminal version, open a terminal <i>inside</i> that folder and run <code>claude</code>.</li>
+      <li>You're in the right place when Claude Code shows <code>Marketing AI System</code> as the current project/folder.</li>
+    </ol>
+    <div class="callout"><b>How you "talk to it":</b> type your request in the box at the bottom and press <b>Enter</b>. It replies and gets to work. Type <b>/</b> on its own to see the list of built‑in commands and skills (that's what something like <code>/system-manager</code> is — you pick it from that list). Whenever it wants to change a file or run something, it <b>shows you first and asks</b> — approve it and it carries on. Nothing happens without your OK.</div>
+    <div class="callout"><b>What's a "chat"?</b> Each conversation in Claude Code is its own <b>chat session</b>. You don't <i>have</i> to name them, but it helps a lot to <b>name each chat for its job</b> — e.g. <i>Brand setup</i>, <i>Q3 launch</i>, <i>Retro</i> — and to <b>start a fresh chat for each new job</b> (each campaign, each retro). That keeps each conversation focused and easy to find again.</div>
+  </div>
+
+  <div class="step"><div class="sh">Step 5 — Finish the install</div>
+    <p>The system <b>isn't a wizard with buttons</b> — you run it by <b>typing plain‑English requests in a chat</b>, and it asks you questions back and does the work.</p>
+    <p>In a chat, type:</p>
     <p style="font-size:18px"><b>set yourself up</b></p>
-    <p>It installs the last few pieces it needs, checks everything works, and turns on <b>automatic backup</b>. If anything's missing it tells you the one thing to fix in plain language. When it says <b>READY</b>, you're done with setup.</p>
+    <p>It installs the last few pieces, checks everything works, and turns on <b>automatic backup</b>. If something's missing it tells you the one thing to fix, in plain language. When it says <b>READY</b>, setup is done. (One time only.)</p>
   </div>
 
-  <div class="step"><div class="sh">Step 5 — Start using it</div>
-    <p>In the chat, type <b>"Onboard &lt;your business name&gt;"</b>. The system interviews you about your business — voice, look, where you publish — and builds your foundation (required before any campaign can start). Then say <b>"start a campaign"</b>. Full walk-through: <a href="getting-started.html">Getting started</a>.</p>
+  <div class="step"><div class="sh">Step 6 — Set up your working chats</div>
+    <p>Now set up the chats you'll use day to day. For each, press <b>+ New Session</b> and make sure it's under the <b>Soundtrak AI Studio</b> project (connected to your folder).</p>
+    <ol>
+      <li><b>Improve the system</b> — this chat is to make the <i>system itself</i> better and improve how it operates (it is <i>not</i> for running a campaign). Type <b>"/system-manager"</b> to set it up. Nothing is required from you on Day 0, but from here you can say <b>"run a system retro"</b>, <b>"capture an idea: …"</b>, or <b>"add to backlog: …"</b>. This is how the system gets better over time — your ideas become tracked work you can pick up later.</li>
+      <li><b>Brand setup</b> — <i>do this once, before anything else.</i> This foundation is <b>required before any campaign can start</b> — it's the "brand brain" every campaign reuses, so you never re‑explain yourself. It collects things like your style guide, tone of voice, governance rules, target market and tech stack. Type <b>"Brand setup"</b> and the system interviews you and builds your foundation. Have these ready to paste in or describe:
+        <ul>
+          <li><b>Brand style guide</b> — or just your logo, colours and fonts.</li>
+          <li><b>Tone of voice</b> — how you sound, words you use and words you avoid.</li>
+          <li><b>Positioning &amp; segments</b> — what you stand for, and who you're selling to.</li>
+          <li><b>Rules you must follow</b> — only if you're regulated (finance, health…): disclaimers, things you can't claim.</li>
+          <li><b>Where you publish + your martech</b> — your channels, plus your tools (CRM, email, analytics). If any needs a password or key, the system shows you where to enter it safely — never in a file.</li>
+          <li><b>Best-practice examples</b> — a few standout pieces for the system to learn from.</li>
+        </ul>
+      </li>
+    </ol>
+    <div class="callout"><b>The one habit that matters:</b> a <b>fresh chat for each new job</b> — each campaign, each retro — and give it a name. Everything you do is saved automatically and carried across chats through your foundation, so a new chat never loses your brand or your past work.</div>
+  </div>
+
+  <div class="step"><div class="sh">Step 7 — Your first campaign</div>
+    <p>That's it — you're set up. You're now ready for your first campaign: press <b>+ New Session</b> (name it for the campaign, e.g. "Q3 launch") and type <b>"start a campaign: &lt;what it's for&gt;"</b>. The <a href="operator-guide.html">Operator guide</a> walks you through it, stage by stage.</p>
   </div>
 
   <h2>If the health check shows red</h2>
@@ -87,7 +130,7 @@
     <li><b>Upgrades</b>: your copy is yours and keeps working as-is — you never <i>have</i> to upgrade. If a newer version is released, whoever gave you the system can hand you the update.</li>
   </ul>
 
-  <p class="footer"><a class="backlink" href="help.html">← Help &amp; guides</a> &nbsp;·&nbsp; Soundtrak AI Marketing System</p>
+  <p class="footer"><a class="backlink" href="help.html">← Help &amp; guides</a> &nbsp;·&nbsp; Soundtrak AI Studio</p>
 </div>
 </body>
 </html>
