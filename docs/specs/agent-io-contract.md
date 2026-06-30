@@ -1,8 +1,8 @@
 # Agent I/O Contract spec
 
-**Version**: v0.1 · 2026-06-24 (**DESIGN ONLY** — Step 1 of a staged rollout; not yet wired into any agent)
-**Status**: Proposed. Ticket SYS-004. Implementing it is staged (see §6) — this document changes no agent and no skill.
-**Owner**: Campaign Manager (orchestration); reviewed by the operator before any wiring.
+**Version**: v0.2 · 2026-06-30 (**IMPLEMENTED — Steps 2-3 of §6**: validator built + agents emit the return envelope + CM validates at the boundary, all ADDITIVE / non-breaking. Step 4 — CM consumes the envelope as the SOLE source of truth + retires prose-parsing + a check-state dispatch↔return pairing layer — remains the future gated step.)
+**Status**: Wired (additive). Ticket SYS-004. Validator: [`.claude/skills/agent-io/validate_envelope.py`](../../.claude/skills/agent-io/validate_envelope.py) (+ `dispatch_ledger.py`); CM emits the dispatch envelope + validates each return (see campaign-manager SKILL.md "Agent I/O contract (SYS-004)"); all six agents emit the `return:` block (their prose returns are unchanged). Nothing breaks if an envelope is missing.
+**Owner**: Campaign Manager (orchestration); reviewed by the operator. Step 4 is gated by operator review before any prose-parsing is retired.
 
 ## 1. Why
 
@@ -102,10 +102,12 @@ A failed return is **not** silently accepted: CM re-dispatches with the gap name
 
 Each step is its own ticket, gated by operator review. **No step touches a live agent until the prior one is proven.**
 
-- **Step 1 — this spec.** Design the envelopes; change nothing. ← *you are here.*
-- **Step 2 — pilot on Producer.** Producer emits the return envelope *alongside* its existing prose; CM validates it but still reads the prose. Run on one real asset / campaign; confirm the envelope captures everything CM needs.
-- **Step 3 — roll to the other agents**, one at a time (Governance → Brand → CD → Insights → Forensic), each emitting + validated, each verified before the next.
-- **Step 4 — CM consumes the envelope** as the source of truth for dashboard / cost / status auto-update; retire prose-parsing. Add a smoke-test / check-state layer that validates dispatch↔return pairing across a campaign.
+- **Step 1 — this spec.** Design the envelopes; change nothing. ✅ done (v0.1).
+- **Step 2 — pilot on Producer.** Producer emits the return envelope *alongside* its existing prose; CM validates it but still reads the prose. ✅ **implemented** — the validator (`.claude/skills/agent-io/validate_envelope.py`) checks dispatch_id pairing, status, the Producer required fields, and ship-file existence; CM emits the §3 dispatch envelope + runs the validator before acting + appends to `.claude/state/dispatch-ledger.jsonl`. Producer's AGENT.md now carries the `return:` block instruction.
+- **Step 3 — roll to the other agents** (Governance → Brand → CD → Insights → Forensic), each emitting + validated. ✅ **implemented** — all six agents' AGENT.md files carry the `return:` block; the validator covers every per-agent profile (gate verdicts for Governance/Brand, artifacts for CD/Insights/Forensic).
+- **Step 4 — CM consumes the envelope** as the SOLE source of truth for dashboard / cost / status auto-update; retire prose-parsing. Add a smoke-test / check-state layer that validates dispatch↔return pairing across a campaign. ← *future gated step — not yet done; prose-parsing stays authoritative during rollout.*
+
+> **Where we are (2026-06-30):** Steps 2-3 are wired and ADDITIVE — the structured envelope rides *alongside* the prose, the validator gates each return, but the prose is still read. Nothing breaks if an envelope is missing. Step 4 (envelope as sole source of truth) is the next ticket, gated by operator review.
 
 ## 7. Cross-references
 - [`per-step-brief.md`](per-step-brief.md) — the dispatch body (human-readable); this contract adds the structured header + the return side.

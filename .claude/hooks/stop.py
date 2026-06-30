@@ -295,6 +295,21 @@ def main():
     except Exception:
         pass
 
+    # SYS-016: re-render the System Manager dashboard if its data (backlog/ideas/audit-log)
+    # changed this turn. Runs BEFORE the campaign-dirty early-return so a pure-system turn
+    # still refreshes the board. build-dashboard.py resolves system/ via data_root → correct
+    # from a worktree too.
+    try:
+        _sys_flag = PROJECT_ROOT / ".claude" / "state" / "system-dirty"
+        if _sys_flag.exists():
+            _build_dash = PROJECT_ROOT / ".claude" / "skills" / "system-manager" / "build-dashboard.py"
+            if _build_dash.exists():
+                run_python([str(_build_dash)])
+                print("[state-hook] re-rendered system/dashboard.html (SYS-016)", file=sys.stderr)
+            _sys_flag.unlink(missing_ok=True)
+    except Exception:
+        pass
+
     ledger = load_ledger()
     dirty = ledger.get("campaigns", {})
     if not dirty:

@@ -74,6 +74,8 @@ def collect_issues(campaign_dir: Path) -> set[str]:
         keys.add(f"{slug}::campaign_yaml::{line.strip()}")
     for line in check.check_ships_drift(campaign_dir, folders):
         keys.add(f"{slug}::ships::{line.strip()}")
+    for line in check.check_board_currency(campaign_dir):
+        keys.add(f"{slug}::board::{line.strip()}")
     return keys
 
 

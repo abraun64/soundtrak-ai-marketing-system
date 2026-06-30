@@ -73,8 +73,6 @@ html, body {
   flex: 1;
   min-width: 0;
 }
-/* Help & guides link sits at the far right of the bar, next to the refresh control. */
-.breadcrumb > :last-child { margin-left: auto; }
 .crumb {
   color: var(--text-muted);
   text-decoration: none;
@@ -128,7 +126,7 @@ html, body {
 .library-nav {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   font-size: 12px;
 }
 .lib-link {

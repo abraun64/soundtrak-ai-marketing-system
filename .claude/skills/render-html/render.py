@@ -211,7 +211,7 @@ def _classify_plan_section(title: str) -> str:
 # tuple order is the disambiguation priority (more specific types first); matched
 # against each asset's name + form + review-shape + ships (not notes, to cut
 # noise). Tuned to the real campaign vocabulary — avoid keywords that collide with
-# tenant products (e.g. "cookbook" is the Acme Co product, not a setup runbook).
+# tenant products (e.g. "cookbook" is a tenant product, not a setup runbook).
 _PLAN_TYPE_BUCKETS = (
     ("Video", ("video", " mp4", "remotion", "reel", "youtube", "shorts", "tiktok")),
     ("Ads & paid", ("display network", "gdn", "paid creative", "google ads",
@@ -754,13 +754,8 @@ def build_breadcrumb(output_path: Path, project_root: Path) -> str:
             html_parts.append(f'<a class="crumb crumb-link" href="{href}">{label}</a>')
         else:
             html_parts.append(f'<span class="crumb crumb-current">{label}</span>')
-    # Global Help & guides link — pushed to the far right of the breadcrumb bar (next to
-    # the refresh control), present on every operator surface (Retro-5). margin-left:auto
-    # right-aligns it inside the flex breadcrumb (float is ignored on flex items).
-    help_href = href_to("docs/guide/help.html")
-    html_parts.append(
-        f'<a class="crumb-link" style="margin-left:auto;font-weight:500" href="{help_href}">Help &amp; guides</a>'
-    )
+    # (Help & guides now lives in the top-right pill nav alongside Library — see
+    # build_library_nav — so every surface's header is consistent.)
     return "".join(html_parts)
 
 
@@ -1134,31 +1129,41 @@ def render_mockups(extra_context: dict, base_dir: Path) -> str:
 # =============================================================================
 
 def build_library_nav(output_path: Path, project_root: Path) -> str:
-    """Top-right nav: links to the two reference libraries (Gold-Standard + Inspiration).
-    Paths are relative to the output page so links work both when served and when opened from disk.
-    The link is hidden on the library INDEXes themselves (and on the campaigns/index.html) only via the
-    `is_current` styling — the link still renders but reads as the current page.
+    """Top-right pill nav, identical on every operator surface: Help & guides + Library.
+
+    Both pills are RELATIVE to the output page (work served or opened from disk) and are
+    rendered ONLY when their target file exists — so a link here can never 404. In a fresh
+    client Seed the library ships EMPTY, so the Library pill is simply omitted until the
+    operator builds one (/library-add creates tenant/library/INDEX.html); Help & guides
+    (docs/guide/help.html) ships with every deployment, so it is always present. The pill
+    for the page you are on gets the --current style.
     """
     def href_to(target_rel: str) -> str:
         target = project_root / target_rel
         return os.path.relpath(target, output_path.parent).replace("\\", "/")
-
-    lib_href = href_to("tenant/library/INDEX.html")
-    playbooks_href = href_to("tenant/library/playbooks/winning-new-clients-playbook.html")
 
     try:
         rel = output_path.resolve().relative_to(project_root.resolve()).as_posix()
     except ValueError:
         rel = ""
 
-    in_library = rel.startswith("tenant/library/")
-    lib_class = "lib-link lib-link--current" if in_library else "lib-link"
+    links = []
+    if (project_root / "docs/guide/help.html").exists():
+        cur = " lib-link--current" if rel == "docs/guide/help.html" else ""
+        links.append(
+            f'<a class="lib-link{cur}" href="{href_to("docs/guide/help.html")}" '
+            f'title="Help &amp; guides — deployment, operator guide, FAQ">📖 Help &amp; guides</a>'
+        )
+    if (project_root / "tenant/library/INDEX.html").exists():
+        cur = " lib-link--current" if rel.startswith("tenant/library/") else ""
+        links.append(
+            f'<a class="lib-link{cur}" href="{href_to("tenant/library/INDEX.html")}" '
+            f'title="Unified reference library">📚 Library</a>'
+        )
 
-    return (
-        f'<nav class="library-nav" aria-label="Reference library">'
-        f'  <a class="{lib_class}" href="{lib_href}" title="Unified reference library — 74 entries, faceted by audience/vertical/shape/source">📚 Library</a>'
-        f'</nav>'
-    )
+    if not links:
+        return ""
+    return f'<nav class="library-nav" aria-label="Site links">{"".join(links)}</nav>'
 
 
 def render(markdown_path: Path, template_name: str, output_path: Path, extra_context: dict | None = None) -> None:

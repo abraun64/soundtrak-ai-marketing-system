@@ -156,3 +156,22 @@ CM is authoring the Plan and asks: "would adding tactic X dilute the concept's n
   "errors": []
 }
 ```
+
+### Return envelope (SYS-004) — ADDITIVE, alongside the prose
+
+Per [`docs/specs/agent-io-contract.md`](../../docs/specs/agent-io-contract.md) §4, **also end your response with a single fenced ```yaml `return:` block** so CM can validate the handoff machine-checkably. This is **additive** — keep the concepts, the pitch rationale, and the JSON above exactly as is.
+
+```yaml
+return:
+  dispatch_id: <matches the dispatch.id CM sent>
+  agent: creative-director
+  status: delivered | blocked | needs-rescope | refused
+  artifacts:                              # the concept/brand-context files you authored (≥1)
+    - { path: campaigns/<slug>/concepts/concept-trio.md, type: Foundation, ship: false }
+    - { path: campaigns/<slug>/concept-moodboard.md,     type: Foundation, ship: false }
+  flags:
+    - { to: brand, kind: open-question, text: <thing Brand should pressure-test> }
+  notes: <short prose, optional>
+```
+
+Required on `status: delivered`: `artifacts` with ≥1 entry (the concept files). Paths under `artifacts` with `ship: true` must exist on disk — concept/brand-context files are typically `ship: false` (not gallery deliverables), so they aren't existence-checked. Use `blocked` / `needs-rescope` / `refused` (with `notes`) when you can't deliver.

@@ -148,6 +148,19 @@ else:
     check("L5", "nav-audit present", False, "missing")
 
 
+# ── Layer 6 — Doc content + structure ────────────────────────────────────────
+# docs-audit is the CONTENT layer over nav-audit (presence). It exits 1 on stale
+# agent-count language, a class table missing an expected column, docs/public
+# behind the roster/specs, or a §9/§10/§11 coverage mismatch — the drift class
+# nav-audit's presence-only check can't see (SYS-018/SYS-026).
+DOCSAUDIT = ROOT / ".claude" / "skills" / "docs-audit" / "docs_audit.py"
+if DOCSAUDIT.exists():
+    ok, err = _run_ok([str(DOCSAUDIT)])
+    check("L6", "doc content + structure", ok, "drift — run docs-audit to see what's stale" if not ok else "")
+else:
+    check("L6", "docs-audit present", False, "missing")
+
+
 # ── Report ───────────────────────────────────────────────────────────────────
 LAYERS = {
     "L1": "LAYER 1 - Render pipeline",
@@ -155,6 +168,7 @@ LAYERS = {
     "L3": "LAYER 3 - Hook wiring",
     "L4": "LAYER 4 - Git repos",
     "L5": "LAYER 5 - Doc index",
+    "L6": "LAYER 6 - Doc content + structure",
 }
 print("=== SYSTEM SMOKE TEST ===")
 print(f"Date: {datetime.now():%Y-%m-%d %H:%M}")

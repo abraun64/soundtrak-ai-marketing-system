@@ -78,7 +78,7 @@ Orchestration spine — **ingest what exists, don't invent strategy**:
 
 Goal: a 1-page **Brief** + a live campaign dashboard. **Brand Context is inherited from Phase 0, never authored here.**
 
-1. **Inherit the tenant baseline.** Load `tenant-brand/<tenant>.md` (Brand Context) + `tenant-brand/<tenant>-playbook.md` §0 (value prop · claim map · only-we lines · segment pointer — FIXED INPUT; style/tone/target are NEVER re-asked at campaign level). Ask the operator one yes/no: "is this still current?" **If no baseline exists → Phase 0 hasn't run; route there first.**
+1. **Inherit the tenant baseline.** Load `tenant-brand/<tenant>.md` (Brand Context) + `tenant-brand/<tenant>-playbook.md` §0 (value prop · claim map · only-we lines · segment pointer — FIXED INPUT; style/tone/target are NEVER re-asked at campaign level) + **§0a Disqualifiers / hard-nos** (who we do NOT target · angles we will NOT make · off-limits competitor framings · hard brand/legal nos — the always-loaded inverse of §0; carry it as a FIXED INPUT to the Brief so the objective never targets a walked-away segment or leans on an off-limits claim). Ask the operator one yes/no: "is this still current?" **If no baseline exists → Phase 0 hasn't run; route there first.**
 2. **Competitive freshness scan** (per-campaign, ~$0.50): refresh the §0 claim map before concepts fire; update §0 if the competitive frame moved.
 3. **Brief intake — grill-me interview** (per-field, not batched). For each field: (a) state your current read; (b) ask 1–2 probing questions; (c) recommend an answer (use `AskUserQuestion` where there's an option set); (d) capture with attribution; (e) move on. Then a **dependency pass** (surface tensions: budget vs effort, timeline vs KPI). Target 4–8 min. **Anti-batch: ≤2 questions per turn.** Fast-path: operator says "fast-path"/"batch" → single proactive ask. Full discipline: [`brief.md`](../../../docs/specs/brief.md).
 4. **Author the Brief** (1-page max; pull aggressively from inputs; flag `TBD`s in the approval surface).
@@ -97,7 +97,7 @@ On approval: Brief Status → Approved; re-render; Phase 2 fires.
 
 Goal: the operator picks one of three Concepts.
 
-1. **Dispatch CD** with the locked Brief + Brand Context + **playbook §0 as FIXED INPUT** (CD dramatises toward the objective, never re-authors) + **the Brief's selected segment + its segment-map slice** (CD mines for insight, never re-selects) + **the Insight Brief §1 + §2 for the selected segment(s)** (`campaigns/<slug>/insight-brief.md` — §1 the evidenced audience insight the CD builds concept §2 *on* rather than inferring cold; §2 the budget- and time-filtered **routes to market** — media + community + partnership/co-GTM + intermediary (VCs/incubators/associations) + advocacy — that inform the concept's rollout, incl. partnership plays a low-budget concept can be built around; NOT a prescribed asset mix — the CD still owns that; no-op for pre-Insights campaigns) + `tenant/library/` access. **Inject when they exist** (flat paths; no-op until Phase 0 authors them): the **Compliance Profile slice** (`tenant-brand/<tenant>-compliance.md` — approved disclaimers + prohibited claims; CD uses it as the *compliance-clearable* convergence filter so the trio can't surface a concept the Phase-4 governance gate will block) · the **market landscape** (`tenant-brand/<tenant>-market.md`) · the **Digital Twin frameworks** pointer (`operator/the operator/index.md`). **State the deliverable type explicitly**: campaign ideas (market-facing) or positioning/value-prop routes (foundation-shaped). CD runs the divergent→convergent method (named-lens sweep + visible kill register → convergence filters), recorded in concept §10.
+1. **Dispatch CD** with the locked Brief + Brand Context + **playbook §0 as FIXED INPUT** (CD dramatises toward the objective, never re-authors) + **playbook §0a Disqualifiers / hard-nos as a convergence filter** (the trio can't surface a concept that targets a walked-away segment or makes an off-limits claim; prohibited-claim detail stays the Compliance slice's job — §0a carries the pointer) + **the Brief's selected segment + its segment-map slice** (CD mines for insight, never re-selects) + **the Insight Brief §1 + §2 for the selected segment(s)** (`campaigns/<slug>/insight-brief.md` — §1 the evidenced audience insight the CD builds concept §2 *on* rather than inferring cold; §2 the budget- and time-filtered **routes to market** — media + community + partnership/co-GTM + intermediary (VCs/incubators/associations) + advocacy — that inform the concept's rollout, incl. partnership plays a low-budget concept can be built around; NOT a prescribed asset mix — the CD still owns that; no-op for pre-Insights campaigns) + `tenant/library/` access. **Inject when they exist** (flat paths; no-op until Phase 0 authors them): the **Compliance Profile slice** (`tenant-brand/<tenant>-compliance.md` — approved disclaimers + prohibited claims; CD uses it as the *compliance-clearable* convergence filter so the trio can't surface a concept the Phase-4 governance gate will block) · the **market landscape** (`tenant-brand/<tenant>-market.md`) · the **Digital Twin frameworks** pointer (`operator/the operator/index.md`). **State the deliverable type explicitly**: campaign ideas (market-facing) or positioning/value-prop routes (foundation-shaped). CD runs the divergent→convergent method (named-lens sweep + visible kill register → convergence filters), recorded in concept §10.
 2. CD authors three Concepts (Safe / Smart / Wild) per [`concept.md`](../../../docs/specs/concept.md); one Recommended with §7 pitch rationale.
 3. Render the side-by-side `concepts/concept-trio.html`; surface ONE thing: "Concepts ready: `file:///…/concept-trio.html` — reply which one to ship".
 
@@ -135,11 +135,52 @@ Author a self-contained **Per-Step Brief** (full discipline: [`per-step-brief.md
 - **Visual slice** (if visual) — palette hexes + typography + composition rules for this aspect ratio + the "never do" list + **Canva brand kit ID** if Mode B.
 - **Strategy slice** — audience-for-this-asset + key message + why-this-in-sequence (Brief + Concept + Plan).
 - **Tenant playbook slice** — 1–3 relevant tactical learnings, quoted with evidence tags + `§N` citations. Empty for first-campaign tenants. **NEVER** substitute a sibling campaign's files (graduate-then-cite).
+- **Disqualifiers / hard-nos slice** — inject the playbook §0a card in EVERY Per-Step Brief, the same way the audience/§0 inputs are sliced: who this asset must NOT address + angles/claims it must NOT make + off-limits competitor framings + hard brand nos. For prohibited *claims*, carry the §0a POINTER to the Compliance Profile §2 (don't restate the claims — Governance §2 is the source of truth; the §4b Governance gate enforces them). Always present (not just when "relevant") — it's a bright-line guardrail, the inverse of the audience-for-this-asset.
 - **Mandatories** (Brief + Concept §Risks + Plan §Fast-lane) · **KPIs for this asset** · **Suggested production mode** (A Replicate / B Canva / C HTML).
 - **Knowledge-gap + ship-complete checklist** — per embedded operator-action, classify *marketing decision* vs *technical execution* (name the cookbook); list everything Producer must bundle for hands-off shipping.
 - **Asset-type spec** — cite the dedicated spec if one exists ([battle-cards](../../../docs/specs/battle-cards.md) · [pitch-deck](../../../docs/specs/pitch-deck.md) · [cookbook](../../../docs/specs/cookbook.md)); else the generic [asset.md](../../../docs/specs/asset.md). Cite the path so Producer reads it first.
 
 Save the brief to disk only when high-stakes / multi-cycle / audit matters; otherwise it lives in the invocation prompt.
+
+### Agent I/O contract (SYS-004) — additive structured envelope
+
+**Spec**: [`agent-io-contract.md`](../../../docs/specs/agent-io-contract.md). This is **additive and non-breaking** (spec §6 Steps 2-3): the Per-Step Brief body, the asset content, and the agents' prose returns are ALL unchanged. You emit a small structured **dispatch envelope** alongside each brief, and on each return you **validate** the agent's structured **return envelope** before acting. **You still read the prose during rollout** — the envelope rides alongside it; nothing breaks if an envelope is missing. (Retiring prose-parsing is the spec's future gated Step 4, not this.)
+
+1. **Emit the dispatch envelope** with each Per-Step Brief (a small YAML header, per spec §3 — the brief body rides alongside as the human-readable task):
+
+   ```yaml
+   dispatch:
+     id: <campaign>/<asset>/<agent>/<n>      # unique; pairs with the return
+     campaign: <slug>
+     agent: producer | governance | brand | creative-director | insights | forensic
+     asset_ref: <asset-slug>                 # omit for non-asset agents
+     review_shape: output | template[+N] | variant-comp[NxM]   # mirrors the Plan
+     expects: [artifacts, self_qa, status]   # what the return MUST contain
+     budget: { model: <id>, max_tokens: <n> }   # optional; feeds metered cost
+   ```
+
+2. **On each return, RUN the validator BEFORE acting** (gate agents, applying fixes, rendering — all happen *after* this passes):
+
+   ```bash
+   python .claude/skills/agent-io/validate_envelope.py \
+     --return <return.yaml> --dispatch <dispatch.yaml> \
+     --asset-dir campaigns/<slug>/assets/<asset-slug>
+   ```
+
+   GREEN (exit 0) → proceed with the normal Producer → Governance → Brand cycle below. RED (non-zero) → **do not silently accept it** (§5): re-dispatch with the named gap, or surface it to the operator. The validator checks `dispatch_id` pairing · a valid `status` · the per-agent required fields on `delivered` (Producer artifacts + `self_qa.copy`/`.visual`/`.content_subedit`; Governance/Brand `gate.verdict` + `audit_ref`; CD/Insights/Forensic artifacts) · and that every `ship: true` artifact **exists on disk** (reuses the SYS-003 gallery ship-file check). See the `agent-io` skill.
+
+3. **Append the dispatch↔return pair to the dispatch ledger** (mirror the cost-ledger pattern), SAME turn, so the orchestration is auditable:
+
+   ```bash
+   python .claude/skills/agent-io/dispatch_ledger.py add \
+     --campaign <slug> --asset <NN> --agent <agent> \
+     --dispatch-id <id> --status <delivered|blocked|...> --verdict <ok|RED> \
+     --note "<what was dispatched / returned>"
+   ```
+
+   Ledger file: `.claude/state/dispatch-ledger.jsonl` (append-only, one JSON line per pair) — same shape and discipline as `.claude/state/cost-ledger.jsonl`.
+
+During rollout this runs **alongside** the existing prose handoff — if an agent hasn't emitted an envelope yet, fall back to the prose return and note the gap; never block the cycle on a missing envelope.
 
 ### Orchestrate: Producer → Governance → Brand → Insights (advisory) → operator
 

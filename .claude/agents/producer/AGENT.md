@@ -66,7 +66,7 @@ That's it. Conditional reads:
 | `variant-comp [N variants × M sizes]` | One representative comp at the canonical size | **The comp only** — all other sizes/instances are generated from the approved comp and inherit automatically; do NOT build them as separately-reviewed artifacts |
 
 **Copy file** tells you what companion to ship alongside the visual:
-- `md` → author a `copy.md` with all editable copy in clean markdown
+- `md` → author a `copy.md` — the operator's EDIT SURFACE, bare-minimum only (per `docs/specs/asset.md` §Editable copy file). Exactly four parts: (1) a one-line header — what it is + where it goes + "Edit below; I mirror your edits into the asset"; (2) ≤4 constraint bullets that bind the copy (voice rules · per-field character limits · keep-UTM-intact); (3) the copy as labelled `**Field**:` blocks (web → one block per `§N` section; social/card/email → the type's fields with char caps); (4) optional one `↳ Preview in situ:` link. **BANNED here — put it in `asset.md` instead, never copy.md**: the thesis / strategic rationale, the "Current state" / version-history changelog, per-section `[design notes]` annotations, Brand-verdict commentary, production / deploy notes. A copy.md must read as *just the copy and how to edit it*; if non-copy material runs past ~one screen, it's wrong.
 - `csv` → author a `variants.csv` with all variant copy fields in tabular form
 - `pptx` → the deck IS the deliverable; no separate copy file; ship `deck.pptx` via build script
 - `none` → no copy companion needed
@@ -503,6 +503,30 @@ Return to CM with `status: escalate_to_<specialist>` + reasoning. CM decides: in
   "errors": []
 }
 ```
+
+### Return envelope (SYS-004) — ADDITIVE, alongside the prose
+
+Per [`docs/specs/agent-io-contract.md`](../../docs/specs/agent-io-contract.md) §4, **also end your response with a single fenced ```yaml `return:` block** so CM can validate the handoff machine-checkably. This is **additive** — keep everything above (the prose asset, self-QA, the JSON summary) exactly as is; the envelope is metadata about the handoff, not a replacement.
+
+```yaml
+return:
+  dispatch_id: <matches the dispatch.id CM sent>
+  agent: producer
+  status: delivered | blocked | needs-rescope | refused
+  artifacts:                              # mirrors asset.yaml ship:true files (≥1 ship:true)
+    - { path: <rel-to-asset-dir>, type: Instance|Template|Foundation, ship: true, role: primary_doc }
+    - { path: <visual file>,      type: Instance, ship: true }
+  self_qa:
+    copy:    { ran: true, layers: 3, pass: true, report: "§7 / asset record" }
+    visual:  { ran: true, layers: 3, pass: true, report: "§Self-QA" }    # or pass:false / n/a where no visual
+    content_subedit: { ran: true, violations: 0, report: "§7 Sub-edit report" }   # every copy asset
+  flags:                                  # optional; CM routes these
+    - { to: operator, kind: open-question, text: <one line> }
+  cost: { tokens_in: <n>, tokens_out: <n> }    # optional; feeds the cost-ledger
+  notes: <short prose, optional>
+```
+
+Required on `status: delivered`: `artifacts` with ≥1 `ship: true` (paths must exist on disk) + `self_qa.copy` + `self_qa.visual` + `self_qa.content_subedit`. If you return `blocked` / `needs-rescope` / `refused` instead, give `notes` explaining why (the delivered-state fields aren't required then).
 
 ---
 

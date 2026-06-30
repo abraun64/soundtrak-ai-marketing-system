@@ -37,6 +37,10 @@ try:
     DATA_ROOT = repo_paths.data_root(ROOT)
 except Exception:  # noqa: BLE001
     DATA_ROOT = ROOT
+try:
+    import operator_nav
+except Exception:  # noqa: BLE001
+    operator_nav = None
 SYSTEM_DIR = DATA_ROOT / "system"
 SYSTEM_CSS = ROOT / ".claude/skills/render-html/templates/styles/system.css"
 
@@ -391,6 +395,7 @@ def build() -> Path:
 
     idea_rows = "\n".join(render_idea_row(i) for i in ideas)
     now = datetime.now().strftime("%Y-%m-%d %H:%M")
+    library_nav = operator_nav.top_nav_pills(DATA_ROOT, "../") if operator_nav else ""
 
     body = f"""
   <header class="page-header">
@@ -400,7 +405,7 @@ def build() -> Path:
         <span class="crumb-sep">&#8250;</span>
         <span class="crumb crumb-current">Operator dashboard</span>
       </nav>
-      <div class="page-header__right"><button type="button" class="refresh-btn" onclick="location.reload()" title="Refresh this page" aria-label="Refresh">&#10227;</button><span class="page-header__template">system</span></div>
+      <div class="page-header__right">{library_nav}<button type="button" class="refresh-btn" onclick="location.reload()" title="Refresh this page" aria-label="Refresh">&#10227;</button><span class="page-header__template">system</span></div>
     </div>
   </header>
 

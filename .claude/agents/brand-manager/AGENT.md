@@ -175,3 +175,22 @@ Triggered when the asset breaks a Brand Context rule AND the campaign's authoris
   "errors": []
 }
 ```
+
+### Return envelope (SYS-004) — ADDITIVE, alongside the prose
+
+Per [`docs/specs/agent-io-contract.md`](../../docs/specs/agent-io-contract.md) §4, **also end your response with a single fenced ```yaml `return:` block** so CM can validate the verdict machine-checkably (never inferred from prose). This is **additive** — keep the verdict, required-changes, scorecard, and the JSON above exactly as is.
+
+```yaml
+return:
+  dispatch_id: <matches the dispatch.id CM sent>
+  agent: brand
+  status: delivered | blocked | needs-rescope | refused
+  gate:
+    verdict: pass | pass-with-notes | send-back | kill   # MUST be one of these
+    audit_ref: <path/anchor to the §Brand verdict block, e.g. asset.md#brand-verdict>
+  flags:
+    - { to: operator, kind: decision, text: <one line — e.g. an architecture-vs-stretch conflict> }
+  notes: <short prose, optional>
+```
+
+Map your existing verdict words to the set: Pass → `pass` · Pass-with-Notes → `pass-with-notes` · Pass-with-Required-Changes / Fail → `send-back` (surgical fixes ride in your prose / JSON) · a kill recommendation → `kill`. Required on `delivered`: `gate.verdict` + `gate.audit_ref`. Use `blocked` / `needs-rescope` / `refused` (with `notes`) only when you genuinely can't render a verdict.

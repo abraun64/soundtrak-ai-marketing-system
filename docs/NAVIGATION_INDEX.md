@@ -3,7 +3,7 @@
 **The system's own dashboard.** Everything in the system lives in one of the document classes below. If you're cold-starting and don't know where something is, start here.
 
 **Last updated**: 2026-06-30
-**Version**: v2
+**Version**: v3
 
 > **Kept fresh by `nav-audit`** (`.claude/skills/nav-audit/nav_audit.py`) — diffs this index against the specs/skills/agents/playbooks on disk and flags anything missing, any dead link, a stale stamp, and the oldest-untouched docs. It runs as part of `system-smoke-test` (so any "run smoke test" catches index drift) and on demand ("run nav audit"). When you add a spec/skill/agent/playbook, add a row here — the audit will catch it if you forget.
 
@@ -27,6 +27,8 @@ Each section answers: *what kind of thing is this, when do you read it, and wher
 ## 2. Specs (canonical schemas — all campaigns inherit)
 
 *Specs define the structure of artifacts. When an artifact doesn't look right, check the spec first.*
+
+**Grouped by category** — artifact schemas · asset-type specs · architecture & process — in [`docs/specs/README.md`](specs/README.md).
 
 | Spec | What it governs | Where |
 |---|---|---|
@@ -57,7 +59,7 @@ Each section answers: *what kind of thing is this, when do you read it, and wher
 | **Gallery QA spec** | Pre-surface gallery checklist + the Plan-Ships ⇄ gallery-tile contract (check before the operator sees it). | `docs/specs/gallery-qa.md` |
 | **Data Architecture spec** | Storage model — markdown authoritative, HTML rendered, OneDrive + Git dual-backed; render-pipeline contract. | `docs/specs/data-architecture.md` |
 | **System Manager spec** | The System-layer owner: backlog + idea inbox + audit schema, the operator dashboard (To Do split "Needs you" / "AI can action" + audit history), and the capture / triage / retro / groom workflows. | `docs/specs/system-manager.md` |
-| **Agent I/O Contract spec** | Structured dispatch + return envelopes for CM↔agent handoffs (machine-checkable orchestration: ship-file existence, explicit verdicts, cost capture). DESIGN ONLY — Step 1 of SYS-004's staged rollout. | `docs/specs/agent-io-contract.md` |
+| **Agent I/O Contract spec** | Structured dispatch + return envelopes for CM↔agent handoffs (machine-checkable orchestration: ship-file existence, explicit verdicts, cost capture). WIRED (additive) — SYS-004 Steps 2-3: validator (`agent-io` skill) + agents emit + CM validates; Step 4 (sole source of truth) gated. | `docs/specs/agent-io-contract.md` |
 | **Standalone Deployment spec** | Retro-5: packaging the system as a clean single-tenant "Seed" — ship/tenant/personal manifest, the `build_seed` allowlist cut + leak scan, Phase-0 hard gate, install doctor, the phased plan + safety model. | `docs/specs/standalone-deployment.md` |
 
 ---
@@ -66,8 +68,8 @@ Each section answers: *what kind of thing is this, when do you read it, and wher
 
 *Playbooks are step-by-step operator runbooks for recurring processes. They tell you exactly what to do, in order.*
 
-| Playbook | What it covers | When to use |
-|---|---|---|
+| Playbook | What it covers | When to use | Where |
+|---|---|---|---|
 | **Onboard a new tenant** | Fact-find → Brand Context → folder structure → integrations → first campaign Brief. Includes §7 System design rationale (transfer the "why" to new tenants). | First conversation after "yes, let's do this" | `docs/playbooks/onboard-tenant.md` |
 | **Client operator onboarding** | Day-1 handoff session + 4-week standby for tenant-self-runs or handoff models. | Phase 5 execution for non-the operator-runs tenants | `docs/playbooks/client-operator-onboarding.md` |
 | **Pre-sync hygiene** | Checklist before running sync-tenant.ps1. Prevents cross-tenant leakage and dirty master propagation. | Before any master → tenant sync | `docs/playbooks/pre-sync-hygiene.md` |
@@ -98,30 +100,35 @@ Each section answers: *what kind of thing is this, when do you read it, and wher
 
 *Skills are invoked by natural language. The `description:` block in each SKILL.md is the trigger mechanism — not the slash command.*
 
-| Skill | What it does | Trigger phrases |
-|---|---|---|
-| **campaign-manager** | Main system entry point. Start campaigns, advance them, get status. | "start campaign", "what's next", "ship the asset" |
-| **render-html** | Markdown → HTML for any doc class. | "render this", "generate HTML" |
-| **asset-gallery** | Builds the per-campaign gallery.html with tiles, lightbox, modal. | Called by CM automatically |
-| **canva-design** | Mode B visual production via Canva MCP. | Called by Producer |
-| **replicate-generate** | Mode A AI visual generation via Replicate API. | Called by Producer |
-| **library-add** | Adds a URL/asset to the tenant library. | "add this to the library" |
-| **insight-scan** | The Insights Manager's disciplined multi-source web sweep (research library cite-first · human-behaviour · cohort voice · trade media · GTM/partnership routes). Feeds the Insight Brief. | Called by Insights Manager (Phase 1) |
-| **cost-ledger** | Per-dispatch AI cost ledger; dashboard AI-cost totals render from it (COST_TOTAL_AUTO). | Called by CM on each subagent return |
-| **content-subedit** | Sub-edits LinkedIn posts / Substack articles against the Soundtrak voice rules. | "sub-edit this", "check against the voice rules" |
-| **deploy-mailchimp** | Pushes email assets to Mailchimp via API. | Called by CM at Phase 6 |
-| **deploy-cookbook** | Universal cookbook-based deployment fallback. | Called by CM at Phase 6 |
-| **sb-podcast-weekly-assets** | Acme Co Talks Friday cycle: transcript + URL → full bundle. | "run weekly cadence for Acme Co Talks" |
-| **system-smoke-test** | Health check: render pipeline + operator-quartet (all campaigns) + hooks + git + nav-index. Returns red/amber/green. | "run system smoke test", "check system health" |
-| **system-drift-watcher** | Cross-campaign drift scan (stale dashboards · zombie To-Do rows · in-flight Producers · stale cross-refs). | "check system drift", "anything stale?" |
-| **cm-audit** | Surface-currency audit — every operator surface (dashboard/gallery/tasks/index/tenant-home) re-rendered after its data source changed. | "run cm audit", "are the surfaces current?" |
-| **nav-audit** | Keeps this index honest — diffs `NAVIGATION_INDEX.md` against specs/skills/agents/playbooks on disk; flags missing entries, dead links, stale stamp + oldest docs. | "run nav audit", "is the navigation index fresh?" |
-| **system-manager** | Owner of the System layer — maintains the system-improvement backlog + idea inbox + audit history and the operator dashboard (To Do split Needs-you / AI-can-action + audit history), independent of any campaign. Capture / triage / retro / groom. | "system idea: …", "triage the inbox", "run a system retro", "/system-manager" |
-| **thought-leadership** | the operator's content workflow: a pasted concept / principle / research → LinkedIn + Substack pieces (orchestrates the three skills below). | "new concept", "let's do a piece on X", "run the feedback loop" |
-| **behavior-gap-sketch** | Distils raw text into one Carl Richards / Behavior-Gap visual metaphor + a copy-paste image prompt. | `/carl-image` |
-| **linkedin-post** | Turns the same principle into a high-impact LinkedIn post, paired with the sketch. | `/image-social-post` |
-| **long-form** | Turns the same principle into a feature-length Substack article. | `/long-form` |
-| **publish-soundtrak-article-website** | Publishes a finished article to soundtrakconsulting.com/thinking/ (docx + hero image + Substack URL). | "publish article", "publish to soundtrak" |
+*All skills live in `.claude/skills/<name>/` (the SKILL.md is the entry point).*
+
+| Skill | What it does | Trigger phrases | Where |
+|---|---|---|---|
+| **campaign-manager** | Main system entry point. Start campaigns, advance them, get status. | "start campaign", "what's next", "ship the asset" | `.claude/skills/campaign-manager/` |
+| **render-html** | Markdown → HTML for any doc class. | "render this", "generate HTML" | `.claude/skills/render-html/` |
+| **asset-gallery** | Builds the per-campaign gallery.html with tiles, lightbox, modal. | Called by CM automatically | `.claude/skills/asset-gallery/` |
+| **canva-design** | Mode B visual production via Canva MCP. | Called by Producer | `.claude/skills/canva-design/` |
+| **replicate-generate** | Mode A AI visual generation via Replicate API. | Called by Producer | `.claude/skills/replicate-generate/` |
+| **library-add** | Adds a URL/asset to the tenant library. | "add this to the library" | `.claude/skills/library-add/` |
+| **insight-scan** | The Insights Manager's disciplined multi-source web sweep (research library cite-first · human-behaviour · cohort voice · trade media · GTM/partnership routes). Feeds the Insight Brief. | Called by Insights Manager (Phase 1) | `.claude/skills/insight-scan/` |
+| **cost-ledger** | Per-dispatch AI cost ledger; dashboard AI-cost totals render from it (COST_TOTAL_AUTO). | Called by CM on each subagent return | `.claude/skills/cost-ledger/` |
+| **agent-io** | Validates the agent I/O contract (SYS-004) — the structured `return:` envelope that rides alongside each agent's prose. CM runs `validate_envelope.py` on every return (dispatch_id pairing · status · per-agent required fields · ship-file existence) + appends the pair to the dispatch ledger. Additive / non-breaking. | Called by CM on each subagent return; "validate the envelope" | `.claude/skills/agent-io/` |
+| **content-subedit** | Sub-edits LinkedIn posts / Substack articles against the Soundtrak voice rules. | "sub-edit this", "check against the voice rules" | `.claude/skills/content-subedit/` |
+| **deploy-mailchimp** | Pushes email assets to Mailchimp via API. | Called by CM at Phase 6 | `.claude/skills/deploy-mailchimp/` |
+| **deploy-cookbook** | Universal cookbook-based deployment fallback. | Called by CM at Phase 6 | `.claude/skills/deploy-cookbook/` |
+| **sb-podcast-weekly-assets** | Acme Co Talks Friday cycle: transcript + URL → full bundle. | "run weekly cadence for Acme Co Talks" | `.claude/skills/sb-podcast-weekly-assets/` |
+| **system-smoke-test** | Health check: render pipeline + operator-quartet (all campaigns) + hooks + git + nav-index. Returns red/amber/green. | "run system smoke test", "check system health" | `.claude/skills/system-smoke-test/` |
+| **system-drift-watcher** | Cross-campaign drift scan (stale dashboards · zombie To-Do rows · in-flight Producers · stale cross-refs). | "check system drift", "anything stale?" | `.claude/skills/system-drift-watcher/` |
+| **cm-audit** | Surface-currency audit — every operator surface (dashboard/gallery/tasks/index/tenant-home) re-rendered after its data source changed. | "run cm audit", "are the surfaces current?" | `.claude/skills/cm-audit/` |
+| **nav-audit** | Keeps this index honest — diffs `NAVIGATION_INDEX.md` against specs/skills/agents/playbooks on disk; flags missing entries, dead links, stale stamp + oldest docs. | "run nav audit", "is the navigation index fresh?" | `.claude/skills/nav-audit/` |
+| **docs-audit** | The CONTENT/STRUCTURE layer over nav-audit — reads INSIDE the docs: stale agent-count prose (five/six after the 7th agent), class tables that lost a column, `docs/public/` behind the roster/specs, and §9/§10/§11 coverage vs disk (SYS-018/SYS-026 drift class). | "run docs audit", "are the docs consistent?", "is the agent count right everywhere?" | `.claude/skills/docs-audit/` |
+| **cadences** | Four proactive scheduled sweeps — competitor/library scan · tenant brand-drift · stale-asset/surface · per-tenant shipped/blocked rollup. Surface-only (file deduped inbox ideas, never auto-ship). | Scheduled (weekly/monthly) via Windows tasks | `.claude/skills/cadences/` |
+| **system-manager** | Owner of the System layer — maintains the system-improvement backlog + idea inbox + audit history and the operator dashboard (To Do split Needs-you / AI-can-action + audit history), independent of any campaign. Capture / triage / retro / groom. | "system idea: …", "triage the inbox", "run a system retro", "/system-manager" | `.claude/skills/system-manager/` |
+| **thought-leadership** | the operator's content workflow: a pasted concept / principle / research → LinkedIn + Substack pieces (orchestrates the three skills below). | "new concept", "let's do a piece on X", "run the feedback loop" | `.claude/skills/thought-leadership/` |
+| **behavior-gap-sketch** | Distils raw text into one Carl Richards / Behavior-Gap visual metaphor + a copy-paste image prompt. | `/carl-image` | `.claude/skills/behavior-gap-sketch/` |
+| **linkedin-post** | Turns the same principle into a high-impact LinkedIn post, paired with the sketch. | `/image-social-post` | `.claude/skills/linkedin-post/` |
+| **long-form** | Turns the same principle into a feature-length Substack article. | `/long-form` | `.claude/skills/long-form/` |
+| **publish-soundtrak-article-website** | Publishes a finished article to soundtrakconsulting.com/thinking/ (docx + hero image + Substack URL). | "publish article", "publish to soundtrak" | `.claude/skills/publish-soundtrak-article-website/` |
 
 ---
 
@@ -132,10 +139,15 @@ Each section answers: *what kind of thing is this, when do you read it, and wher
 | What | What it contains | Where |
 |---|---|---|
 | **Brand Context** | Voice rules, visual identity, compliance posture, channels, gold standards. Per tenant. | `tenant-brand/<tenant-slug>.md` |
-| **Tenant config** | integrations.yaml (platform creds refs + channel defaults), brand assets, per-tenant library. | `tenant/<tenant-slug>/` |
-| **Reference library** | 74-entry inspiration + gold-standard library. Cross-tenant. Faceted (vertical, shape, idea_or_tactic). | `tenant/library/` |
-| **Research library (SHARED)** | Cross-tenant public-research corpus the `insight-scan` cites before fetching. Faceted (vertical · audience · topic · layer [market/human-behaviour] · source-type). Distinct from the creative `tenant/library/`. | `tenant/research-library/` |
+| **Compliance Profile** | Per-tenant regulatory ruleset the Governance Manager authors in Phase 0 + gates against in Phase 4: disclaimer library, prohibited claims, mandatories, risk tiers. | `tenant-brand/<tenant>-compliance.md` |
+| **Segment map** | Per-tenant needs-based segmentation (the buyer groups the Insight Brief works per-segment). | `tenant-brand/<tenant>-segments.md` |
+| **Market landscape** | Per-tenant market context: category, competitors, positioning terrain the insight + concept build on. | `tenant-brand/<tenant>-market.md` |
+| **Tenant playbook** | Per-tenant tactical-learnings record — the campaign-to-campaign inheritance vehicle (graduate-then-cite, three-layer model). | `tenant-brand/<tenant>-playbook.md` |
 | **Audience truths** | Durable per-segment enduring truths, per tenant. Refreshed from each Insight Brief §5 at wrap. | `tenant-brand/<tenant>-audience-truths.md` |
+| **Tech / martech stack** | The tenant's tooling. Authored as the Brief's `tech_stack` block (per campaign) + each tenant's `integrations.yaml` `channel_defaults` (platform defaults). NOT a hidden field — it is an explicit, authored artifact. | Brief `tech_stack` + `tenant/<tenant-slug>/integrations.yaml` |
+| **Tenant config** | `integrations.yaml` (platform creds refs + `channel_defaults`), brand assets, per-tenant library. | `tenant/<tenant-slug>/` |
+| **Reference library** | 92-entry inspiration + gold-standard library. Cross-tenant. Faceted (vertical, shape, idea_or_tactic). | `tenant/library/` |
+| **Research library (SHARED)** | Cross-tenant public-research corpus the `insight-scan` cites before fetching. Faceted (vertical · audience · topic · layer [market/human-behaviour] · source-type). Distinct from the creative `tenant/library/`. | `tenant/research-library/` |
 
 ---
 
@@ -226,4 +238,4 @@ Each section answers: *what kind of thing is this, when do you read it, and wher
 | [`docs/public/feature-list.md`](public/feature-list.html) | RFP responders, procurement, technical evaluators | Technical/structural feature inventory. Side-by-side comparison vs typical in-house team and traditional agency. Architecture, agents, phases, surfaces, toolchain, multi-tenancy, audit, RFP-checklist. |
 | [`docs/public/demo-walkthrough.md`](public/demo-walkthrough.html) | the operator (running a prospect demo) | 10-min screen-by-screen demo script. Uses Acme Co as the live tenant. 10 steps · timing table · short/technical/compliance variations. |
 | [`docs/public/architecture-ai-native.md`](public/architecture-ai-native.html) | Engineers, AI practitioners, technical founders | Full architecture explainer: context stack, agent topology (librarian pattern), three-layer model, control flow, deterministic layer, technical feature list, inventory. |
-| [`docs/public/architecture-plain-english.md`](public/architecture-plain-english.html) | Anyone — zero technical knowledge assumed | Same system explained as a small agency: the five team members, the four decisions, what you see in the browser, memory + safety rails, FAQ. |
+| [`docs/public/architecture-plain-english.md`](public/architecture-plain-english.html) | Anyone — zero technical knowledge assumed | Same system explained as a small agency: the seven roles (Campaign Manager + six specialists), the four decisions, what you see in the browser, memory + safety rails, FAQ. |

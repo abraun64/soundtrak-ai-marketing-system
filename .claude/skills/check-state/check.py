@@ -144,6 +144,72 @@ def check_asset(asset_dir: Path) -> dict:
     }
 
 
+# Layer I (SYS-036): copy.md is the operator's EDIT SURFACE — bare copy only. These are
+# the high-confidence bloat signatures that must NOT appear there (they belong in the asset
+# record, asset.md): a strategic thesis block, a "Current state" / version-history changelog,
+# and per-section [vN: design notes] annotations. See docs/specs/asset.md §Editable copy file.
+COPY_BLOAT_PATTERNS = [
+    ("version-log", re.compile(r"(?im)^\s*\*?\*?Current state\*?\*?\s*:|Prior:\s*v\d|version[-\s]history")),
+    ("thesis-block", re.compile(r"(?im)^\s*\*\*The thesis\*\*")),
+    ("design-annotation", re.compile(r"\[v\d[.\d]*\s*:")),
+]
+
+
+def check_copy_bloat(asset_folders) -> list[str]:
+    """Flag any copy.md carrying a banned non-copy section. One line per offending file."""
+    issues = []
+    for af in asset_folders:
+        cp = af / "copy.md"
+        if not cp.exists():
+            continue
+        try:
+            text = cp.read_text(encoding="utf-8")
+        except OSError:
+            continue
+        hits = [name for name, rx in COPY_BLOAT_PATTERNS if rx.search(text)]
+        if hits:
+            issues.append(f"  {af.name}/copy.md — banned section(s): {', '.join(hits)} → move to asset.md (copy.md is the edit surface)")
+    return issues
+
+
+_BOARD_DONE = ("done", "approved", "complete", "shipped", "✅")
+
+
+def check_board_currency(campaign_dir: Path) -> list[str]:
+    """Layer J (SYS-038) — board-currency / world-↔-data drift. Flags a pending
+    operator_action whose phase the campaign has already moved PAST: the campaign
+    advanced but the task wasn't reconciled (it shipped → mark it done, or it's
+    genuinely overdue). This is the 'items don't drop off as the campaign progresses'
+    class that a long/rabbit-hole session silently introduces. Pure data — reuses the
+    render layer's phase helpers, honours SYS-031's active-later-phase exception."""
+    issues: list[str] = []
+    try:
+        sys.path.insert(0, str(REPO_ROOT / ".claude" / "skills" / "render-html"))
+        import operator_actions as oa  # noqa: PLC0415 — lazy: optional dependency
+        cur = oa._current_phase_num(campaign_dir)
+        if cur is None:
+            return issues
+        active_later = oa._active_later_phase_nums(campaign_dir)
+        actions = oa.scan_campaign(campaign_dir)
+    except Exception:  # noqa: BLE001 — never let the detector break the checker
+        return issues
+    for a in actions:
+        if not isinstance(a, dict):
+            continue
+        status = str(a.get("status") or "pending").strip().lower()
+        if any(d in status for d in _BOARD_DONE):
+            continue
+        pn = oa._phase_num(a.get("phase"))
+        if pn is None or pn >= cur or pn in active_later:
+            continue
+        title = str(a.get("title") or a.get("id") or "(action)")[:55]
+        issues.append(
+            f"  {campaign_dir.name}: pending action in phase {pn} ('{title}') but the campaign "
+            f"is at phase {cur} — reconcile (mark done if it shipped, else confirm still owed)"
+        )
+    return issues
+
+
 def check_dashboard_drift(campaign_dir: Path, asset_results: list[dict]) -> list[str]:
     """Scan the dashboard md for stale references to approved/archived assets.
     Takes the campaign DIR (works for flat campaigns/<slug>/ AND business-rooted
@@ -464,6 +530,26 @@ def report_campaign(campaign_dir: Path) -> int:
         print("  (campaign not closed, or closed with a results report present)")
     else:
         for line in close_issues:
+            print(line)
+            issue_count += 1
+
+    # copy.md bloat sweep (Layer I — SYS-036)
+    print(f"\n--- copy.md bloat cross-check ---")
+    bloat_issues = check_copy_bloat(asset_folders)
+    if not bloat_issues:
+        print("  (no copy.md carries a banned thesis / version-log / design-annotation section)")
+    else:
+        for line in bloat_issues:
+            print(line)
+            issue_count += 1
+
+    # board-currency sweep (Layer J — SYS-038)
+    print(f"\n--- board-currency cross-check ---")
+    board_issues = check_board_currency(campaign_dir)
+    if not board_issues:
+        print("  (no pending action sits in a phase the campaign has already moved past)")
+    else:
+        for line in board_issues:
             print(line)
             issue_count += 1
 

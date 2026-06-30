@@ -155,3 +155,22 @@ If an asset implies a rule the profile doesn't cover, or a regime appears to hav
   "errors": []
 }
 ```
+
+### Return envelope (SYS-004) — ADDITIVE, alongside the prose
+
+Per [`docs/specs/agent-io-contract.md`](../../docs/specs/agent-io-contract.md) §4, **also end your response with a single fenced ```yaml `return:` block** so CM can validate the verdict machine-checkably (never inferred from prose). This is **additive** — keep the verdict line, the audit block, and the JSON above exactly as is.
+
+```yaml
+return:
+  dispatch_id: <matches the dispatch.id CM sent>
+  agent: governance
+  status: delivered | blocked | needs-rescope | refused
+  gate:
+    verdict: clear | clear-with-disclaimers | hold | block   # MUST be one of these
+    audit_ref: <path/anchor to the compliance audit block, e.g. asset.yaml#compliance>
+  flags:
+    - { to: operator, kind: risk, text: <one line — e.g. a Hold's two-path> }
+  notes: <short prose, optional>
+```
+
+Required on `status: delivered`: `gate.verdict` (in the set above) + `gate.audit_ref`. A no-profile no-op still returns `verdict: clear` + a note. Use `blocked` / `needs-rescope` / `refused` (with `notes`) only when you genuinely can't render a verdict.

@@ -525,18 +525,40 @@ def _current_phase_num(campaign_dir: "Path") -> "int | None":
     return None
 
 
+def _active_later_phase_nums(campaign_dir: "Path") -> set:
+    """Phase numbers of LATER phases the campaign is explicitly running CONCURRENTLY —
+    any phase whose status is marked active/running (🚀 or the word 'ACTIVE') even though
+    an earlier phase isn't fully done. A campaign can legitimately straddle two phases
+    (e.g. tail-end Phase-4 production while Phase-5 launch is already live); those phases'
+    tasks are genuinely in play and must show in the To Do, not be filtered as 'future'.
+    Operator rule 2026-06-30 (SYS-038 refinement of SYS-031)."""
+    phases = scan_campaign_yaml(campaign_dir).get("phases") or []
+    out = set()
+    for p in phases:
+        if not isinstance(p, dict):
+            continue
+        s = str(p.get("status") or "")
+        if "🚀" in s or re.search(r"\bactive\b", s, re.I):
+            n = _phase_num(p.get("id"))
+            if n is not None:
+                out.add(n)
+    return out
+
+
 def _drop_future_phase_actions(actions: list, campaign_dir: "Path") -> list:
     """The To Do shows only what the operator must do at the stage the campaign is up to:
-    drop any action whose phase is LATER than the current phase (e.g. Phase 5 launch +
-    Phase 6 cadence steps while still in Phase 4). Earlier-phase actions still open are
-    KEPT (genuinely overdue); actions with no phase are kept. Operator rule 2026-06-30."""
+    drop any action whose phase is LATER than the current phase (e.g. Phase 6 cadence
+    steps while still in Phase 4). Earlier-phase actions still open are KEPT (genuinely
+    overdue); actions with no phase are kept; actions in an explicitly-ACTIVE later phase
+    are KEPT (the campaign is running that phase concurrently). Operator rule 2026-06-30."""
     cur = _current_phase_num(campaign_dir)
     if cur is None:
         return actions
+    active = _active_later_phase_nums(campaign_dir)
     kept = []
     for a in (actions or []):
         pn = _phase_num(a.get("phase"))
-        if pn is not None and pn > cur:
+        if pn is not None and pn > cur and pn not in active:
             continue
         kept.append(a)
     return kept
@@ -966,6 +988,10 @@ def render_phases_table_md(phases: list[dict], campaign_dir: Path) -> str:
         "| Phase | Description | Status | Window | Human Time | AI Cost | Artifacts |",
         "|---|---|---|---|---|---|---|",
     ]
+    # SYS-030: the Artifacts column shows ONE authoritative link per phase (the primary,
+    # always listed first); any other / superseded docs drop to the collapsed archive below
+    # so the gate is unambiguous about what to review.
+    archive: list = []  # (phase_id, phase_title, [demoted rendered artifact strings])
     for ph in phases:
         artifacts_md = ""
         # 1. Declared artifacts (campaign.yaml phases[].artifacts)
@@ -985,6 +1011,7 @@ def render_phases_table_md(phases: list[dict], campaign_dir: Path) -> str:
             if art["href"] not in seen_hrefs:
                 seen_hrefs.add(art["href"])
                 merged.append(art)
+        rendered: list = []
         for art in merged:
             if not isinstance(art, dict):
                 continue
@@ -992,10 +1019,12 @@ def render_phases_table_md(phases: list[dict], campaign_dir: Path) -> str:
             h = str(art.get("href") or "")
             if not t:
                 continue
-            if artifacts_md:
-                artifacts_md += " · "
             is_link = bool(h) and not h.startswith("#") and (campaign_dir / h.split("#")[0]).exists()
-            artifacts_md += f"[{t}]({h})" if is_link else t
+            rendered.append(f"[{t}]({h})" if is_link else t)
+        # Only the PRIMARY (first) artifact stays in the column; the rest go to the archive.
+        artifacts_md = rendered[0] if rendered else ""
+        if len(rendered) > 1:
+            archive.append((str(ph.get("id", "")), str(ph.get("title", "")), rendered[1:]))
         status = _derive_phase_status(ph, campaign_dir)
         lines.append(
             f"| {ph.get('id','')} | {ph.get('title','')} | {status} | "
@@ -1006,6 +1035,17 @@ def render_phases_table_md(phases: list[dict], campaign_dir: Path) -> str:
         "<small>Auto-derived from `campaign.yaml` (phases + cadence) and `assets/*/asset.yaml` (status + operator_actions). "
         "To edit phase prose: edit `campaign.yaml`. To change derived statuses: change the underlying yaml fields, not this table.</small>"
     )
+    # SYS-030 archive — earlier / supporting / superseded docs, one collapsed click below the
+    # gate (so the column above carries exactly one thing to review per phase).
+    if archive:
+        lines.append("")
+        lines.append('<details markdown="1">')
+        lines.append('<summary><strong>🗂 Earlier &amp; supporting documents (by phase)</strong></summary>')
+        lines.append("")
+        for pid, ptitle, items in archive:
+            lines.append(f"- **Phase {pid} · {ptitle}** — " + " · ".join(items))
+        lines.append("")
+        lines.append("</details>")
     return "\n".join(lines)
 
 

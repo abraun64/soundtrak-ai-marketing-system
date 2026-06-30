@@ -12,7 +12,7 @@ identically to flat. Left only as a future option — do NOT resurrect the 9-fil
 restructure without re-confirming with the operator.
 
 Two layouts coexist:
-  - FLAT (existing tenants — Acme Co / Acme Co / Soundtrak):  campaigns/<slug>/  +  tenant-brand/<tenant>-*
+  - FLAT (existing tenants — your tenants):  campaigns/<slug>/  +  tenant-brand/<tenant>-*
   - BUSINESS-ROOTED (new Phase-0 tenants):            <Tenant>/baseline/  +  <Tenant>/campaigns/<slug>/
 
 This module is ADDITIVE. It finds business-rooted campaigns IN ADDITION to flat ones.

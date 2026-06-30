@@ -31,6 +31,8 @@ IDX = ROOT / "docs" / "NAVIGATION_INDEX.md"
 def disk_docs() -> list[tuple[str, str, Path]]:
     items: list[tuple[str, str, Path]] = []
     for p in sorted((ROOT / "docs" / "specs").glob("*.md")):
+        if p.name.upper() in ("README.MD", "INDEX.MD"):
+            continue  # a folder index, not a spec (SYS-024 — categorised spec index)
         items.append(("spec", p.name, p))
     skills = ROOT / ".claude" / "skills"
     if skills.exists():

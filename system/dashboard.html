@@ -80,8 +80,6 @@ html, body {
   flex: 1;
   min-width: 0;
 }
-/* Help & guides link sits at the far right of the bar, next to the refresh control. */
-.breadcrumb > :last-child { margin-left: auto; }
 .crumb {
   color: var(--text-muted);
   text-decoration: none;
@@ -135,7 +133,7 @@ html, body {
 .library-nav {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   font-size: 12px;
 }
 .lib-link {
@@ -1655,7 +1653,7 @@ body.template-system { background: var(--bg); }
         <span class="crumb-sep">&#8250;</span>
         <span class="crumb crumb-current">Operator dashboard</span>
       </nav>
-      <div class="page-header__right"><button type="button" class="refresh-btn" onclick="location.reload()" title="Refresh this page" aria-label="Refresh">&#10227;</button><span class="page-header__template">system</span></div>
+      <div class="page-header__right"><nav class="library-nav" aria-label="Site links"><a class="lib-link" href="../docs/guide/help.html" title="Help &amp; guides — deployment, operator guide, FAQ">📖 Help &amp; guides</a></nav><button type="button" class="refresh-btn" onclick="location.reload()" title="Refresh this page" aria-label="Refresh">&#10227;</button><span class="page-header__template">system</span></div>
     </div>
   </header>
 
@@ -1663,7 +1661,7 @@ body.template-system { background: var(--bg); }
     <div class="sm-top">
       <div>
         <h1 class="sm-title">System operator dashboard</h1>
-        <div class="sm-updated">Updated 2026-06-30 07:11</div>
+        <div class="sm-updated">Updated 2026-06-30 18:58</div>
       </div>
       <div class="sm-actions">
         <button class="sm-btn is-primary" onclick="copyCmd('/system-manager retro')">Run a retro</button>

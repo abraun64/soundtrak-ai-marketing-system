@@ -23,6 +23,44 @@ System Manager; see "Cutting a release" at the foot of this file.
   allocation always target the main checkout (never a per-worktree copy), with a
   duplicate-id guard — preventing ticket-id collisions when work spans git worktrees.
 
+### Changed
+- **Campaign dashboard — one authoritative link per phase.** The Phases & Artifacts
+  table now shows a single primary link per phase (the gate document to review), with
+  earlier/supporting/superseded docs moved to a collapsed "Earlier & supporting
+  documents" block below — so it's unambiguous what each gate is asking you to review.
+
+- **Copy-review files are just the copy now.** A `copy.md` (the operator's edit surface)
+  is held to a strict minimum — a one-line orientation, the copy as labelled fields, and the
+  few constraints that bind it. Strategic rationale, version-history, and design/production
+  notes no longer clutter the edit surface (they live in the asset record).
+- **Copy-surface guard.** The state checker now flags any copy file that regrows a
+  banned section (a thesis, a version-history log, or design annotations), so the edit
+  surface stays clean over time.
+- **Board-currency guard.** The state checker + the turn-boundary gate now flag any
+  to-do item that's still pending in a phase the campaign has already moved past — so the
+  board reflects reality during long working sessions instead of silently lagging.
+
+### Added
+- **Docs-currency check.** A new `docs-audit` diagnostic (run in the smoke test + the
+  weekly digest) catches stale agent counts, dropped navigation-index columns, and public
+  docs that fell behind the agent/spec set — so the reference docs stay honest automatically.
+
+- **Proactive scheduled cadences.** Four optional weekly/monthly sweeps (competitor &
+  library scan · tenant brand-drift · stale-asset/surface · per-tenant shipped/blocked
+  rollup) that surface findings to the inbox on a timer — read-only, never auto-act.
+- **Disqualifiers / hard-nos card.** Each tenant playbook gains an always-loaded section
+  for who you don't target and what you won't say (the inverse of audience truths), sliced
+  into every brief — referencing the compliance profile rather than duplicating it.
+
+- **Categorised spec index.** `docs/specs/README.md` groups the specs into artifact
+  schemas / asset-type specs / architecture & process, so the folder is navigable at a
+  glance without moving any files.
+
+- **Machine-checkable agent handoffs.** CM and the specialist agents now exchange a
+  structured envelope alongside their prose, and CM validates each return (status,
+  required fields, and that every claimed deliverable actually exists on disk) before
+  acting — so a silently-incomplete handoff fails loudly instead of breaking downstream.
+
 ## [1.0.0] — 2026-06-29
 
 Initial public release — the standalone, single-tenant "Seed".

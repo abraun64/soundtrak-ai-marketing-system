@@ -115,17 +115,29 @@ Per `feedback_html_web_page_folder_structure.md`.
 
 ### Editable copy file — REQUIRED for any web / landing-page / long-form text asset
 
-Bundled file: `copy.md` sibling to `asset.md` in the asset folder. **Editorial twin** of the rendered HTML. Operator opens, edits prose directly, saves; Producer reads operator edits on next pass and mirrors them back into `index.html` + `page-copy.md`.
+Bundled file: `copy.md` sibling to `asset.md`. It is the **operator's edit surface** — the bare minimum to read and edit the copy, nothing else. The operator opens it, edits prose directly, saves; the Producer treats it as the authoritative copy source and mirrors edits into `index.html` on the next pass (if `copy.md` and `index.html` diverge, `copy.md` wins).
 
-Rules:
-- Clean copy ONLY — no type-spec annotations, no production notes, no Brand-verdict commentary (those live in `page-copy.md`, the annotated mirror).
-- Section structure mirrors `index.html` order with `§N — <name>` heads.
-- Every editable region exposed as plain Markdown (eyebrow, headers, sub-bodies, body paragraphs, captions, CTAs).
-- Verbatim external artifacts (e.g. comparison-target Generic AI box, external concept descriptors) marked `[VERBATIM — do not edit; <source>]`. Edits there reverted on next pass.
-- File header instructs operator on what they can / can't edit and where structural changes go (chat with CM, not edit-in-file).
-- Producer treats `copy.md` as the authoritative copy source. If `copy.md` and `index.html` diverge between passes, `copy.md` wins (operator has edited).
+**The whole file is four things, in this order. Nothing above the copy but a one-line orientation; nothing below but an optional preview link:**
 
-**Applies to**: landing pages · long-form articles · whitepaper sections · pricing/About pages · email single + sequences (operator may want to edit subject lines + body separately). **Does NOT apply to**: ad headline batches, social-post single bodies <500 chars, microcopy, taglines (overhead > value at small scale — operator edits in chat).
+1. **One-line header** — `# Asset #N — <what it is> — Editable copy`, then ONE line: where it goes (channel / live URL) + "Edit below; the Producer mirrors your edits into the asset."
+2. **Constraints that bind the copy only** (≤4 bullets) — voice rules in one line; per-field character limits; any hard rule that changes the copy (e.g. keep the UTM string intact). Nothing else.
+3. **The copy**, as plainly-labelled editable fields (`**<Field>**: <copy>`), one per editable region. Verbatim external artifacts marked `[VERBATIM — do not edit; <source>]` (edits there revert on the next pass).
+4. **(optional) one** `↳ Preview in situ: <link>` line.
+
+**BANNED from copy.md** — this is the operator's edit surface, not the production record. Keep ALL of the following OUT: the strategic thesis / rationale · the "Current state" or version-history changelog · per-section design or production annotations (`[v2.x: the radial auto-cycles…]`) · Brand-verdict commentary · production / deployment notes (timing, tile render specs, ESP setup). **Every one of those lives in `asset.md`** (the asset record + its audit-history section), never here. Structural changes (add/remove a section) go through chat with CM, not in-file.
+
+**Field sets by asset type** — same skeleton; only the fields differ (social vs web is *not materially* different — just shorter fields with character caps):
+
+| Asset type | Editable fields |
+|---|---|
+| Social tile | Headline · Body · Hashtags · Image alt |
+| X / OG share card | Title (≤70 chars) · Description (≤200 chars) · Image alt |
+| Email (single / sequence) | Subject · Preheader · Body · CTA (per email) |
+| Web / landing / long-form | One labelled block per `§N — <name>` page section (Eyebrow / H1 / Sub-head / Body / Caption / CTA) |
+
+Social / card / email fields carry inline **character limits**; everything else is identical.
+
+**Applies to**: landing pages · long-form articles · whitepaper sections · pricing/About pages · email single + sequences · social tiles · OG/share cards. **Does NOT apply to**: ad headline batches, social-post single bodies <500 chars, microcopy, taglines (operator edits in chat).
 
 ### Setup cookbook(s) — REQUIRED for any asset with technical setup
 Bundled into the asset, not as a separate Pre-flight item (unless cross-asset). Examples:

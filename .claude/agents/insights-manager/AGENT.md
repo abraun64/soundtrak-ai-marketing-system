@@ -121,3 +121,21 @@ This is **fidelity to the insight, not a resonance prediction** — anchor every
   "errors": []
 }
 ```
+
+### Return envelope (SYS-004) — ADDITIVE, alongside the prose
+
+Per [`docs/specs/agent-io-contract.md`](../../docs/specs/agent-io-contract.md) §4, **also end your response with a single fenced ```yaml `return:` block** so CM can validate the handoff machine-checkably. This is **additive** — keep the insight brief, the routes, and the JSON above exactly as is.
+
+```yaml
+return:
+  dispatch_id: <matches the dispatch.id CM sent>
+  agent: insights
+  status: delivered | blocked | needs-rescope | refused
+  artifacts:                              # the insight brief you authored (≥1)
+    - { path: campaigns/<slug>/insight-brief.md, type: Foundation, ship: false }
+  flags:                                  # optional resonance read / open questions
+    - { to: operator, kind: open-question, text: <one line — e.g. an insight_gap> }
+  notes: <short prose, optional>
+```
+
+Required on `status: delivered`: `artifacts` with ≥1 entry (the insight brief). For a resonance-read dispatch, the artifact is the read written into `asset.yaml` (`resonance:` block); carry the read in `flags`/`notes`. Use `blocked` / `needs-rescope` / `refused` (with `notes`) when you genuinely can't deliver.

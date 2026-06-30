@@ -43,11 +43,11 @@ def load_items(path: Path, key: str) -> list:
         return []
 
 
-def run_diag(label: str, script: Path) -> tuple[str, bool, str]:
+def run_diag(label: str, script: Path, args: list | None = None) -> tuple[str, bool, str]:
     if not script.exists():
         return label, True, "(not present — skipped)"
     try:
-        r = subprocess.run([sys.executable, str(script)], cwd=str(ROOT),
+        r = subprocess.run([sys.executable, str(script), *(args or [])], cwd=str(ROOT),
                            capture_output=True, text=True, timeout=180)
         tail = ""
         for line in reversed((r.stdout or r.stderr or "").splitlines()):
@@ -158,11 +158,18 @@ def escalate_to_ticket(label: str, fails: int, backlog: list, today: str):
 def main() -> int:
     today = datetime.now().strftime("%Y-%m-%d")
     diagnostics = [
-        ("smoke-test", SKILLS / "system-smoke-test" / "smoke_test.py"),
-        ("nav-audit", SKILLS / "nav-audit" / "nav_audit.py"),
-        ("cm-audit", SKILLS / "cm-audit" / "cm_audit.py"),
+        ("smoke-test", SKILLS / "system-smoke-test" / "smoke_test.py", None),
+        ("nav-audit", SKILLS / "nav-audit" / "nav_audit.py", None),
+        # docs-audit: CONTENT/STRUCTURE layer over nav-audit's presence check —
+        # stale agent-count prose, dropped index columns, public docs behind the
+        # roster (SYS-018/SYS-026). Persistent RED auto-files per SYS-010.
+        ("docs-audit", SKILLS / "docs-audit" / "docs_audit.py", None),
+        ("cm-audit", SKILLS / "cm-audit" / "cm_audit.py", None),
+        # SYS-038: board-currency / world-↔-data drift — gate.py flags NEW pending-but-
+        # -moved-past actions vs the accepted baseline; persistent ones escalate (SYS-010).
+        ("drift-gate", SKILLS / "check-state" / "gate.py", ["--all-campaigns"]),
     ]
-    results = [run_diag(label, script) for label, script in diagnostics]
+    results = [run_diag(label, script, args) for label, script, args in diagnostics]
 
     backlog = load_items(SYSTEM_DIR / "backlog.yaml", "items")
     ideas = load_items(SYSTEM_DIR / "ideas.yaml", "items")

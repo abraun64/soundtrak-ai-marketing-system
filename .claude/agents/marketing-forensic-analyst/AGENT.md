@@ -82,3 +82,21 @@ If a needed input is missing, ask in the return envelope. Do not proceed with ga
 | Recommend, split do-now vs test-first | Author campaign content or fire other agents |
 | Read only what the invoker injects | Load tenant brand files or strategy docs unprompted |
 | Persist reproducible artefacts | Leave conclusions un-rerunnable |
+
+## Return envelope (SYS-004) — ADDITIVE, alongside the prose
+
+Per [`docs/specs/agent-io-contract.md`](../../docs/specs/agent-io-contract.md) §4, in addition to your findings brief + report path + one-sentence synthesis, **end your response with a single fenced ```yaml `return:` block** so CM can validate the handoff machine-checkably. This is **additive** — keep the HTML report, the findings brief, and the synthesis exactly as is.
+
+```yaml
+return:
+  dispatch_id: <matches the dispatch.id CM sent>
+  agent: forensic
+  status: delivered | blocked | needs-rescope | refused
+  artifacts:                              # the campaign report you authored (≥1)
+    - { path: campaigns/<slug>/analysis/<date>-results.html, type: Instance, ship: false }
+  flags:
+    - { to: operator, kind: risk, text: <one line — e.g. a missing metric / confound> }
+  notes: <short prose — the one-sentence synthesis, optional>
+```
+
+Required on `status: delivered`: `artifacts` with ≥1 entry (the report). Paths with `ship: true` must exist on disk; a report is typically `ship: false` (internal/Foundation), so it isn't existence-checked. Use `blocked` / `needs-rescope` / `refused` (with `notes`) when the data genuinely can't support a report.

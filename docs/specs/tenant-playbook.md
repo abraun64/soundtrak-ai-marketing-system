@@ -36,6 +36,13 @@ The strategic positioning layer (voice/visual stay in Brand Context). Contents:
 - **Fit evidence base** — per-segment product-market-fit status (proven / promising / unproven) with evidence (what's selling, to whom, why · VoC · pricing posture), FINDING/HYPOTHESIS-tagged. Informs the Brief's objective fit-check (challenge, not block).
 Cited as FIXED INPUT by every campaign Brief and every CD concept dispatch. The CD dramatises §0 toward the Brief's primary objective; it never re-invents it.
 
+## §0a Disqualifiers / hard-nos (DURABLE, ALWAYS-LOADED — the inverse of §0; never re-asked at brief)
+The sharp, quotable statement of who we explicitly do NOT target and what we will NOT say. The inverse of the audience-truths: where §1/audience-truths say what holds for the people we serve, this says who we walk away from and which angles are off the table — so no campaign re-derives a no the tenant has already settled. Always-loaded alongside §0 (FIXED INPUT to every Brief + sliced into every Per-Step Brief). Four required fields:
+- **(a) Audiences / segments we do NOT address** — the buyer types, verticals, deal sizes, or geographies this tenant explicitly walks away from (with the one-line *why* — wrong economics, wrong fit, out of scope).
+- **(b) Angles / claims we will NOT make** — positioning lines, hooks, and framings that are off-limits even when they'd "work" (with the *why* — dishonest, off-brand, invites the wrong buyer).
+- **(c) Off-limits competitor framings / topics** — named-competitor knocks, contested categories, or subject areas we don't engage in published copy.
+- **(d) Hard brand / legal nos** — the bright lines. **For prohibited *claims*, this field POINTS to the Governance Compliance Profile §2 (prohibited & restricted claims) by reference — it does NOT copy them** (graduate-then-cite: `tenant-brand/<tenant>-compliance.md` §2 is the single source of truth; duplicating it here would let the two drift). List only the brand-level nos that are NOT compliance claims (e.g. internal-shorthand never used in public), plus the one-line cite to §2.
+
 ## §1 Audience learnings
 What we know about THIS tenant's audience that future briefs should inherit.
 | Learning | Evidence | Source campaign | Date |
@@ -73,7 +80,8 @@ Approval workflows, stakeholder quirks, compliance constraints, publishing logis
 
 - **Per-Step Brief slicing** (Phase 4a): CM pulls the 1–3 most-relevant entries into the brief's Strategy slice (see [`per-step-brief.md`](per-step-brief.md) §2), quoted verbatim with evidence tag + `Playbook §N` citation. Producer reads the slice; never loads this file.
 - **Phase 1 Fact-Find**: for any tenant with prior campaigns, CM reads the playbook at brief intake — pre-fills brief fields and cites entries instead of re-asking the operator.
-- **Phase 2**: CM passes relevant entries to CD in the trio invocation as tactical priors — and §0 in full as FIXED INPUT (proposition + claim map + only-we lines + segment pointer).
+- **Phase 2**: CM passes relevant entries to CD in the trio invocation as tactical priors — and §0 in full as FIXED INPUT (proposition + claim map + only-we lines + segment pointer) + **§0a Disqualifiers / hard-nos** as a convergence filter (the trio can't surface a concept that targets a walked-away segment or makes an off-limits claim).
+- **§0a is always-loaded** (like §0): CM inherits it with the baseline at Phase 1 brief intake and slices it into every Per-Step Brief alongside the audience-for-this-asset, so Producer always knows the bright lines. For prohibited *claims* it carries only the POINTER to the Compliance Profile §2 (graduate-then-cite); Governance §2 remains the single source of truth.
 - **New-tenant onboarding**: §0 is seeded by a competitive scan before first concepts (see `docs/playbooks/onboard-tenant.md` §1.2); campaign-wrap graduations populate the rest.
 - **Foundation-shaped campaigns** (the Brief's objective is strategy development): when the foundation is absent or contested, the campaign engine builds it — strategy artifacts as the asset list, positioning routes as the trio, wrap graduation as the foundation approval. See `docs/workflow.md` §Foundation campaigns + `plan.md` §Asset list discipline.
 - **Tenant kit** (productization): this file ships in the tenant kit — it is part of the compounding value a client tenant accumulates.

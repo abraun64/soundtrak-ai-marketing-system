@@ -31,8 +31,31 @@ sys.path.insert(0, str(PROJECT_ROOT / ".claude" / "lib"))
 try:
     import repo_paths
     CAMPAIGNS_DIR = repo_paths.data_root(PROJECT_ROOT) / "campaigns"
+    SYSTEM_DIR = repo_paths.data_root(PROJECT_ROOT) / "system"
 except Exception:
     CAMPAIGNS_DIR = PROJECT_ROOT / "campaigns"
+    SYSTEM_DIR = PROJECT_ROOT / "system"
+
+# SYS-016: a write to the System Manager's data (backlog/ideas/audit) marks a flag the
+# Stop hook drains by re-rendering system/dashboard.html — mirrors how campaign writes mark
+# the dirty-campaigns ledger, so the system board can't go stale waiting for a manual render.
+SYSTEM_DIRTY_FLAG = PROJECT_ROOT / ".claude" / "state" / "system-dirty"
+SYSTEM_DATA_FILES = {"backlog.yaml", "ideas.yaml", "audit-log.yaml"}
+
+
+def touched_system_data(paths) -> bool:
+    try:
+        sd = SYSTEM_DIR.resolve()
+    except (OSError, ValueError):
+        return False
+    for p in paths:
+        try:
+            rp = p.resolve()
+        except (OSError, ValueError):
+            continue
+        if rp.parent == sd and rp.name in SYSTEM_DATA_FILES:
+            return True
+    return False
 
 
 def classify_path(p: Path):
@@ -185,6 +208,14 @@ def main() -> int:
             touches.append((slug, reason, str(p)))
 
     update_ledger(touches)
+
+    # SYS-016: flag a system-data write so the Stop hook re-renders the system dashboard.
+    if touched_system_data(paths):
+        try:
+            SYSTEM_DIRTY_FLAG.parent.mkdir(parents=True, exist_ok=True)
+            SYSTEM_DIRTY_FLAG.write_text("1", encoding="utf-8")
+        except OSError:
+            pass
 
     # Record latency (non-blocking — failure is silent)
     elapsed_ms = (time.perf_counter() - t_start) * 1000

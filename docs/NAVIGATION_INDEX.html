@@ -429,6 +429,8 @@ html, body {
   gap: 6px;
   font-size: 13px;
   line-height: 1.4;
+  flex: 1;
+  min-width: 0;
 }
 .crumb {
   color: var(--text-muted);
@@ -483,7 +485,7 @@ html, body {
 .library-nav {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   font-size: 12px;
 }
 .lib-link {
@@ -1879,9 +1881,9 @@ body.template-index a.camp-card__tenant:hover { text-decoration: underline; }
 <body class="template-base">
   <header class="page-header">
     <div class="page-header__inner">
-      <nav class="breadcrumb" aria-label="Breadcrumb"><a class="crumb crumb-link" href="../campaigns/index.html">🏠 All Campaigns</a><a class="crumb-link" style="float:right;font-weight:500" href="guide/help.html">Help &amp; guides</a></nav>
+      <nav class="breadcrumb" aria-label="Breadcrumb"><a class="crumb crumb-link" href="../campaigns/index.html">🏠 All Campaigns</a></nav>
       <div class="page-header__right">
-        <nav class="library-nav" aria-label="Reference library">  <a class="lib-link" href="../tenant/library/INDEX.html" title="Unified reference library — 74 entries, faceted by audience/vertical/shape/source">📚 Library</a></nav>
+        <nav class="library-nav" aria-label="Site links"><a class="lib-link" href="guide/help.html" title="Help &amp; guides — deployment, operator guide, FAQ">📖 Help &amp; guides</a><a class="lib-link" href="../tenant/library/INDEX.html" title="Unified reference library">📚 Library</a></nav>
         <button type="button" class="refresh-btn" onclick="location.reload()" title="Refresh this page" aria-label="Refresh">&#10227;</button>
         <span class="page-header__template" aria-hidden="true">base</span>
       </div>
@@ -1893,7 +1895,7 @@ body.template-index a.camp-card__tenant:hover { text-decoration: underline; }
       <h1 id="ai-marketing-system-navigation-index">AI Marketing System — Navigation Index</h1>
 <p><strong>The system's own dashboard.</strong> Everything in the system lives in one of the document classes below. If you're cold-starting and don't know where something is, start here.</p>
 <p><strong>Last updated</strong>: 2026-06-30
-<strong>Version</strong>: v2</p>
+<strong>Version</strong>: v3</p>
 <blockquote>
 <p><strong>Kept fresh by <code>nav-audit</code></strong> (<code>.claude/skills/nav-audit/nav_audit.py</code>) — diffs this index against the specs/skills/agents/playbooks on disk and flags anything missing, any dead link, a stale stamp, and the oldest-untouched docs. It runs as part of <code>system-smoke-test</code> (so any "run smoke test" catches index drift) and on demand ("run nav audit"). When you add a spec/skill/agent/playbook, add a row here — the audit will catch it if you forget.</p>
 </blockquote>
@@ -1926,6 +1928,7 @@ body.template-index a.camp-card__tenant:hover { text-decoration: underline; }
 <hr>
 <h2 id="2-specs-canonical-schemas-all-campaigns-inherit">2. Specs (canonical schemas — all campaigns inherit)</h2>
 <p><em>Specs define the structure of artifacts. When an artifact doesn't look right, check the spec first.</em></p>
+<p><strong>Grouped by category</strong> — artifact schemas · asset-type specs · architecture &amp; process — in <a href="specs/README.md"><code>docs/specs/README.md</code></a>.</p>
 <table>
 <thead>
 <tr>
@@ -2091,6 +2094,7 @@ body.template-index a.camp-card__tenant:hover { text-decoration: underline; }
 <th>Playbook</th>
 <th>What it covers</th>
 <th>When to use</th>
+<th>Where</th>
 </tr>
 </thead>
 <tbody>
@@ -2098,36 +2102,43 @@ body.template-index a.camp-card__tenant:hover { text-decoration: underline; }
 <td><strong>Onboard a new tenant</strong></td>
 <td>Fact-find → Brand Context → folder structure → integrations → first campaign Brief. Includes §7 System design rationale (transfer the "why" to new tenants).</td>
 <td>First conversation after "yes, let's do this"</td>
+<td><code>docs/playbooks/onboard-tenant.md</code></td>
 </tr>
 <tr>
 <td><strong>Client operator onboarding</strong></td>
 <td>Day-1 handoff session + 4-week standby for tenant-self-runs or handoff models.</td>
 <td>Phase 5 execution for non-the operator-runs tenants</td>
+<td><code>docs/playbooks/client-operator-onboarding.md</code></td>
 </tr>
 <tr>
 <td><strong>Pre-sync hygiene</strong></td>
 <td>Checklist before running sync-tenant.ps1. Prevents cross-tenant leakage and dirty master propagation.</td>
 <td>Before any master → tenant sync</td>
+<td><code>docs/playbooks/pre-sync-hygiene.md</code></td>
 </tr>
 <tr>
 <td><strong>Sync master to tenant</strong></td>
 <td>PowerShell + rsync mechanics for propagating master to a tenant's OneDrive.</td>
 <td>Phase 6 setup</td>
+<td><code>docs/playbooks/sync-master-to-tenant.md</code></td>
 </tr>
 <tr>
 <td><strong>Deployment guide</strong></td>
 <td>Non-technical install/setup runbook. <strong>Superseded by <code>docs/guide/deployment-guide.html</code></strong> (Soundtrak HTML); kept as source.</td>
 <td>Reference only</td>
+<td><code>docs/playbooks/deployment-guide.md</code></td>
 </tr>
 <tr>
 <td><strong>Onboarding checklist</strong></td>
 <td>First-run getting-started checklist. <strong>Superseded by <code>docs/guide/getting-started.html</code></strong>; kept as source.</td>
 <td>Reference only</td>
+<td><code>docs/playbooks/onboarding-checklist.md</code></td>
 </tr>
 <tr>
 <td><strong>FAQ</strong></td>
 <td>Self-service Q&amp;A. <strong>Superseded by <code>docs/guide/help.html</code></strong> (Help &amp; Guides hub); kept as source.</td>
 <td>Reference only</td>
+<td><code>docs/playbooks/faq.md</code></td>
 </tr>
 </tbody>
 </table>
@@ -2183,12 +2194,14 @@ body.template-index a.camp-card__tenant:hover { text-decoration: underline; }
 <hr>
 <h2 id="5-skills-operator-invocable-entry-points">5. Skills (operator-invocable entry points)</h2>
 <p><em>Skills are invoked by natural language. The <code>description:</code> block in each SKILL.md is the trigger mechanism — not the slash command.</em></p>
+<p><em>All skills live in <code>.claude/skills/&lt;name&gt;/</code> (the SKILL.md is the entry point).</em></p>
 <table>
 <thead>
 <tr>
 <th>Skill</th>
 <th>What it does</th>
 <th>Trigger phrases</th>
+<th>Where</th>
 </tr>
 </thead>
 <tbody>
@@ -2196,111 +2209,145 @@ body.template-index a.camp-card__tenant:hover { text-decoration: underline; }
 <td><strong>campaign-manager</strong></td>
 <td>Main system entry point. Start campaigns, advance them, get status.</td>
 <td>"start campaign", "what's next", "ship the asset"</td>
+<td><code>.claude/skills/campaign-manager/</code></td>
 </tr>
 <tr>
 <td><strong>render-html</strong></td>
 <td>Markdown → HTML for any doc class.</td>
 <td>"render this", "generate HTML"</td>
+<td><code>.claude/skills/render-html/</code></td>
 </tr>
 <tr>
 <td><strong>asset-gallery</strong></td>
 <td>Builds the per-campaign gallery.html with tiles, lightbox, modal.</td>
 <td>Called by CM automatically</td>
+<td><code>.claude/skills/asset-gallery/</code></td>
 </tr>
 <tr>
 <td><strong>canva-design</strong></td>
 <td>Mode B visual production via Canva MCP.</td>
 <td>Called by Producer</td>
+<td><code>.claude/skills/canva-design/</code></td>
 </tr>
 <tr>
 <td><strong>replicate-generate</strong></td>
 <td>Mode A AI visual generation via Replicate API.</td>
 <td>Called by Producer</td>
+<td><code>.claude/skills/replicate-generate/</code></td>
 </tr>
 <tr>
 <td><strong>library-add</strong></td>
 <td>Adds a URL/asset to the tenant library.</td>
 <td>"add this to the library"</td>
+<td><code>.claude/skills/library-add/</code></td>
 </tr>
 <tr>
 <td><strong>insight-scan</strong></td>
 <td>The Insights Manager's disciplined multi-source web sweep (research library cite-first · human-behaviour · cohort voice · trade media · GTM/partnership routes). Feeds the Insight Brief.</td>
 <td>Called by Insights Manager (Phase 1)</td>
+<td><code>.claude/skills/insight-scan/</code></td>
 </tr>
 <tr>
 <td><strong>cost-ledger</strong></td>
 <td>Per-dispatch AI cost ledger; dashboard AI-cost totals render from it (COST_TOTAL_AUTO).</td>
 <td>Called by CM on each subagent return</td>
+<td><code>.claude/skills/cost-ledger/</code></td>
 </tr>
 <tr>
 <td><strong>content-subedit</strong></td>
 <td>Sub-edits LinkedIn posts / Substack articles against the Soundtrak voice rules.</td>
 <td>"sub-edit this", "check against the voice rules"</td>
+<td><code>.claude/skills/content-subedit/</code></td>
 </tr>
 <tr>
 <td><strong>deploy-mailchimp</strong></td>
 <td>Pushes email assets to Mailchimp via API.</td>
 <td>Called by CM at Phase 6</td>
+<td><code>.claude/skills/deploy-mailchimp/</code></td>
 </tr>
 <tr>
 <td><strong>deploy-cookbook</strong></td>
 <td>Universal cookbook-based deployment fallback.</td>
 <td>Called by CM at Phase 6</td>
+<td><code>.claude/skills/deploy-cookbook/</code></td>
 </tr>
 <tr>
 <td><strong>sb-podcast-weekly-assets</strong></td>
 <td>Acme Co Talks Friday cycle: transcript + URL → full bundle.</td>
 <td>"run weekly cadence for Acme Co Talks"</td>
+<td><code>.claude/skills/sb-podcast-weekly-assets/</code></td>
 </tr>
 <tr>
 <td><strong>system-smoke-test</strong></td>
 <td>Health check: render pipeline + operator-quartet (all campaigns) + hooks + git + nav-index. Returns red/amber/green.</td>
 <td>"run system smoke test", "check system health"</td>
+<td><code>.claude/skills/system-smoke-test/</code></td>
 </tr>
 <tr>
 <td><strong>system-drift-watcher</strong></td>
 <td>Cross-campaign drift scan (stale dashboards · zombie To-Do rows · in-flight Producers · stale cross-refs).</td>
 <td>"check system drift", "anything stale?"</td>
+<td><code>.claude/skills/system-drift-watcher/</code></td>
 </tr>
 <tr>
 <td><strong>cm-audit</strong></td>
 <td>Surface-currency audit — every operator surface (dashboard/gallery/tasks/index/tenant-home) re-rendered after its data source changed.</td>
 <td>"run cm audit", "are the surfaces current?"</td>
+<td><code>.claude/skills/cm-audit/</code></td>
 </tr>
 <tr>
 <td><strong>nav-audit</strong></td>
 <td>Keeps this index honest — diffs <code>NAVIGATION_INDEX.md</code> against specs/skills/agents/playbooks on disk; flags missing entries, dead links, stale stamp + oldest docs.</td>
 <td>"run nav audit", "is the navigation index fresh?"</td>
+<td><code>.claude/skills/nav-audit/</code></td>
+</tr>
+<tr>
+<td><strong>docs-audit</strong></td>
+<td>The CONTENT/STRUCTURE layer over nav-audit — reads INSIDE the docs: stale agent-count prose (five/six after the 7th agent), class tables that lost a column, <code>docs/public/</code> behind the roster/specs, and §9/§10/§11 coverage vs disk (SYS-018/SYS-026 drift class).</td>
+<td>"run docs audit", "are the docs consistent?", "is the agent count right everywhere?"</td>
+<td><code>.claude/skills/docs-audit/</code></td>
+</tr>
+<tr>
+<td><strong>cadences</strong></td>
+<td>Four proactive scheduled sweeps — competitor/library scan · tenant brand-drift · stale-asset/surface · per-tenant shipped/blocked rollup. Surface-only (file deduped inbox ideas, never auto-ship).</td>
+<td>Scheduled (weekly/monthly) via Windows tasks</td>
+<td><code>.claude/skills/cadences/</code></td>
 </tr>
 <tr>
 <td><strong>system-manager</strong></td>
 <td>Owner of the System layer — maintains the system-improvement backlog + idea inbox + audit history and the operator dashboard (To Do split Needs-you / AI-can-action + audit history), independent of any campaign. Capture / triage / retro / groom.</td>
 <td>"system idea: …", "triage the inbox", "run a system retro", "/system-manager"</td>
+<td><code>.claude/skills/system-manager/</code></td>
 </tr>
 <tr>
 <td><strong>thought-leadership</strong></td>
 <td>the operator's content workflow: a pasted concept / principle / research → LinkedIn + Substack pieces (orchestrates the three skills below).</td>
 <td>"new concept", "let's do a piece on X", "run the feedback loop"</td>
+<td><code>.claude/skills/thought-leadership/</code></td>
 </tr>
 <tr>
 <td><strong>behavior-gap-sketch</strong></td>
 <td>Distils raw text into one Carl Richards / Behavior-Gap visual metaphor + a copy-paste image prompt.</td>
 <td><code>/carl-image</code></td>
+<td><code>.claude/skills/behavior-gap-sketch/</code></td>
 </tr>
 <tr>
 <td><strong>linkedin-post</strong></td>
 <td>Turns the same principle into a high-impact LinkedIn post, paired with the sketch.</td>
 <td><code>/image-social-post</code></td>
+<td><code>.claude/skills/linkedin-post/</code></td>
 </tr>
 <tr>
 <td><strong>long-form</strong></td>
 <td>Turns the same principle into a feature-length Substack article.</td>
 <td><code>/long-form</code></td>
+<td><code>.claude/skills/long-form/</code></td>
 </tr>
 <tr>
 <td><strong>publish-soundtrak-article-website</strong></td>
 <td>Publishes a finished article to soundtrakconsulting.com/thinking/ (docx + hero image + Substack URL).</td>
 <td>"publish article", "publish to soundtrak"</td>
+<td><code>.claude/skills/publish-soundtrak-article-website/</code></td>
 </tr>
 </tbody>
 </table>
@@ -2322,24 +2369,49 @@ body.template-index a.camp-card__tenant:hover { text-decoration: underline; }
 <td><code>tenant-brand/&lt;tenant-slug&gt;.md</code></td>
 </tr>
 <tr>
+<td><strong>Compliance Profile</strong></td>
+<td>Per-tenant regulatory ruleset the Governance Manager authors in Phase 0 + gates against in Phase 4: disclaimer library, prohibited claims, mandatories, risk tiers.</td>
+<td><code>tenant-brand/&lt;tenant&gt;-compliance.md</code></td>
+</tr>
+<tr>
+<td><strong>Segment map</strong></td>
+<td>Per-tenant needs-based segmentation (the buyer groups the Insight Brief works per-segment).</td>
+<td><code>tenant-brand/&lt;tenant&gt;-segments.md</code></td>
+</tr>
+<tr>
+<td><strong>Market landscape</strong></td>
+<td>Per-tenant market context: category, competitors, positioning terrain the insight + concept build on.</td>
+<td><code>tenant-brand/&lt;tenant&gt;-market.md</code></td>
+</tr>
+<tr>
+<td><strong>Tenant playbook</strong></td>
+<td>Per-tenant tactical-learnings record — the campaign-to-campaign inheritance vehicle (graduate-then-cite, three-layer model).</td>
+<td><code>tenant-brand/&lt;tenant&gt;-playbook.md</code></td>
+</tr>
+<tr>
+<td><strong>Audience truths</strong></td>
+<td>Durable per-segment enduring truths, per tenant. Refreshed from each Insight Brief §5 at wrap.</td>
+<td><code>tenant-brand/&lt;tenant&gt;-audience-truths.md</code></td>
+</tr>
+<tr>
+<td><strong>Tech / martech stack</strong></td>
+<td>The tenant's tooling. Authored as the Brief's <code>tech_stack</code> block (per campaign) + each tenant's <code>integrations.yaml</code> <code>channel_defaults</code> (platform defaults). NOT a hidden field — it is an explicit, authored artifact.</td>
+<td>Brief <code>tech_stack</code> + <code>tenant/&lt;tenant-slug&gt;/integrations.yaml</code></td>
+</tr>
+<tr>
 <td><strong>Tenant config</strong></td>
-<td>integrations.yaml (platform creds refs + channel defaults), brand assets, per-tenant library.</td>
+<td><code>integrations.yaml</code> (platform creds refs + <code>channel_defaults</code>), brand assets, per-tenant library.</td>
 <td><code>tenant/&lt;tenant-slug&gt;/</code></td>
 </tr>
 <tr>
 <td><strong>Reference library</strong></td>
-<td>74-entry inspiration + gold-standard library. Cross-tenant. Faceted (vertical, shape, idea_or_tactic).</td>
+<td>92-entry inspiration + gold-standard library. Cross-tenant. Faceted (vertical, shape, idea_or_tactic).</td>
 <td><code>tenant/library/</code></td>
 </tr>
 <tr>
 <td><strong>Research library (SHARED)</strong></td>
 <td>Cross-tenant public-research corpus the <code>insight-scan</code> cites before fetching. Faceted (vertical · audience · topic · layer [market/human-behaviour] · source-type). Distinct from the creative <code>tenant/library/</code>.</td>
 <td><code>tenant/research-library/</code></td>
-</tr>
-<tr>
-<td><strong>Audience truths</strong></td>
-<td>Durable per-segment enduring truths, per tenant. Refreshed from each Insight Brief §5 at wrap.</td>
-<td><code>tenant-brand/&lt;tenant&gt;-audience-truths.md</code></td>
 </tr>
 </tbody>
 </table>
@@ -2630,7 +2702,7 @@ body.template-index a.camp-card__tenant:hover { text-decoration: underline; }
 <tr>
 <td><a href="public/architecture-plain-english.html"><code>docs/public/architecture-plain-english.md</code></a></td>
 <td>Anyone — zero technical knowledge assumed</td>
-<td>Same system explained as a small agency: the five team members, the four decisions, what you see in the browser, memory + safety rails, FAQ.</td>
+<td>Same system explained as a small agency: the seven roles (Campaign Manager + six specialists), the four decisions, what you see in the browser, memory + safety rails, FAQ.</td>
 </tr>
 </tbody>
 </table>

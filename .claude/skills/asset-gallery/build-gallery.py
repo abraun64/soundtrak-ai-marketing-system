@@ -40,6 +40,10 @@ try:
     CAMPAIGNS = repo_paths.data_root(ROOT) / "campaigns"
 except Exception:
     CAMPAIGNS = ROOT / "campaigns"
+try:
+    import operator_nav
+except Exception:
+    operator_nav = None
 
 THUMB_W, THUMB_H = 560, 560
 THUMB_W_VERTICAL, THUMB_H_VERTICAL = 360, 640
@@ -402,7 +406,7 @@ def detect_status(asset_dir: Path, file_path: Path) -> str:
 
     Checks multiple common naming conventions for the asset record MD:
     - <numeric-prefix>-*.md (Acme Co pattern: 0a-foo.md, 17-bar.md, etc.)
-    - preview.md (Acme Co convention)
+    - preview.md (legacy convention)
     - asset-record.md (generic fallback)
     """
     if asset_dir.is_dir():
@@ -417,7 +421,7 @@ def detect_status(asset_dir: Path, file_path: Path) -> str:
             candidates.append(named_record)
         candidates.extend(asset_dir.glob("[0-9]*-*.md"))   # Acme Co convention: 0a-foo.md / 17-bar.md
         candidates.extend(asset_dir.glob("asset.md"))      # Soundtrak / generic convention
-        candidates.extend(asset_dir.glob("preview.md"))    # Acme Co convention
+        candidates.extend(asset_dir.glob("preview.md"))    # legacy convention
         candidates.extend(asset_dir.glob("asset-record.md"))
         for md in candidates:
             try:
@@ -668,6 +672,8 @@ def build_html(campaign_slug: str, tiles: list[dict], foundation_docs: list[dict
     counts_line = " · ".join(f"{n} {s}" for s, n in by_status.items())
     system_css = load_system_css()
     breadcrumb = build_breadcrumb(campaign_slug)
+    # Top-right pill nav (Help & guides + Library) — identical to the render-html surfaces.
+    library_nav = operator_nav.top_nav_pills(out_path.parents[2], "../../") if operator_nav else ""
     # Approval status string (replaces the phase-name pill): green tick when every
     # reviewable asset is Approved, else "In progress". Shown left of the Task list.
     pending = by_status.get("For Human Review", 0) + by_status.get("In Production", 0)
@@ -1030,6 +1036,7 @@ main.page-main {{ padding: 24px 24px 64px; }}
     <div class="page-header__inner">
       {breadcrumb}
       <div class="page-header__right">
+        {library_nav}
         <button type="button" class="refresh-btn" onclick="location.reload()" title="Refresh this page" aria-label="Refresh">&#10227;</button>
         <span class="page-header__template" aria-hidden="true">gallery</span>
       </div>
@@ -1156,7 +1163,7 @@ function render() {{
             const icon = reviewShapeRaw.startsWith('template') ? '📋' :
                          reviewShapeRaw.startsWith('variant-comp') ? '🎨' : '🖼';
             // Short label: strip bracket details for badge display
-            const short = reviewShapeRaw.replace(/\s*\[.*\]/, '').trim();
+            const short = reviewShapeRaw.replace(/\\s*\\[.*\\]/, '').trim();
             return `<span class="badge badge-review-shape" title="${{reviewShapeRaw}}">${{icon}} ${{short}}</span>`;
           }})() : '';
           const typeClass = `tile-type-${{ty}}`;
@@ -1675,7 +1682,7 @@ def main():
                   "  fields (format_requirements + verification + deployment_notes) require\n"
                   "  manual authoring.\n\n"
                   "  Fix: edit each asset.yaml; add deployment: block per spec.\n"
-                  "  Pre-existing assets (Wave 0 of acme-co-podcast-engine-2026q2)\n"
+                  "  Pre-existing assets (Wave 0 of acme-podcast-2026q2)\n"
                   "  will be retrofitted in Phase 4 of the Rollout Architecture build sequence.\n"
                 + "=" * 78 + "\n",
                 file=sys.stderr,
@@ -1693,7 +1700,7 @@ def main():
         candidates: list[Path] = []
         candidates.extend(asset_dir.glob("[0-9]*-*.md"))   # Acme Co: 0a-foo.md / 17-bar.md
         candidates.extend(asset_dir.glob("asset.md"))      # Soundtrak / generic
-        candidates.extend(asset_dir.glob("preview.md"))    # Acme Co
+        candidates.extend(asset_dir.glob("preview.md"))    # legacy convention
         candidates.extend(asset_dir.glob("asset-record.md"))  # generic fallback
         for record_md in candidates:
             sections = extract_operator_sections(record_md)
