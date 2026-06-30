@@ -34,10 +34,10 @@
   .know li{font-size:14.5px;color:var(--slate800);margin:5px 0;}
   .map{border-top:1px solid var(--slate200);border-bottom:1px solid var(--slate200);padding:20px 0;margin:0 0 12px;}
   .map .mt{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--slate600);font-weight:600;margin-bottom:13px;}
-  .map ol{margin:0;padding:0;list-style:none;counter-reset:s;display:grid;grid-template-columns:1fr 1fr;gap:9px 28px;}
+  .map ol{margin:0;padding:0;list-style:none;counter-reset:s;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(4,auto);grid-auto-flow:column;gap:9px 28px;}
   .map li{counter-increment:s;font-size:14.5px;display:flex;align-items:baseline;gap:11px;}
   .map li::before{content:counter(s);flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;width:21px;height:21px;border-radius:50%;background:var(--ink);color:#fff;font-size:11px;font-weight:600;}
-  .map li.x::before{content:"\2726";background:var(--navy);}
+  .map li.x::before{content:"\2726";background:var(--red);}
   .map a{color:var(--ink);text-decoration:none;}.map a:hover{color:var(--red);}
   .map .gate{color:var(--slate600);font-size:12.5px;}
   .stage{margin-top:18px;}
@@ -45,7 +45,7 @@
   .stage summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:13px;padding:17px 20px;}
   .stage summary::-webkit-details-marker{display:none;}
   .stage summary .sn{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:var(--ink);color:#fff;font-family:var(--serif);font-size:15px;font-weight:600;}
-  .stage summary.x .sn{background:var(--navy);}
+  .stage summary.x .sn{background:var(--red);}
   .stage summary .sh{font-family:var(--serif);font-size:22px;font-weight:600;line-height:1.1;}
   .stage summary .stag{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--slate600);font-weight:600;margin-left:auto;white-space:nowrap;}
   .sbody{padding:4px 22px 24px;}
@@ -160,6 +160,11 @@
   .blist li{font-size:13px;color:var(--slate800);margin:6px 0;line-height:1.45;}
   .blist b{color:var(--ink);font-weight:600;}
   code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.86em;background:var(--slate100);padding:1px 5px;border-radius:4px;color:var(--navy);}
+  .vidhold{max-width:600px;margin:10px auto 4px;border:2px dashed #cbc9c0;border-radius:12px;background:var(--paper);aspect-ratio:16/9;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:22px;}
+  .vidhold .vptri{width:54px;height:54px;border-radius:50%;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-size:19px;padding-left:4px;}
+  .vidhold .vh{font-family:var(--serif);font-size:17px;font-weight:600;color:var(--ink);}
+  .vidhold .vs{font-size:12.5px;color:var(--slate600);max-width:48ch;line-height:1.5;margin-top:4px;}
+  .vidhold .vbadge{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--slate600);font-weight:600;border:1px solid var(--slate200);border-radius:999px;padding:2px 10px;}
   .footer{margin-top:50px;border-top:2px solid var(--ink);padding-top:18px;font-size:13px;color:var(--slate600);}
   .footer a{color:var(--navy);}
 </style>
@@ -176,13 +181,13 @@
 <div class="wrap">
   <h1>Operator Guide</h1>
   <p class="tag">The AI studio that 10Xs your marketing.</p>
-  <p class="lede">Everything you do, stage by stage — from setting up your business to shipping your first piece and keeping it running. You mostly <b>answer questions and approve work in chat</b>; this guide shows you <b>what you'll see</b>, <b>what to get done</b>, and <b>exactly what you approve to move on</b>. Written for someone who has never used the system before.</p>
+  <p class="lede">Everything you do, stage by stage — from starting your first campaign to shipping each piece and keeping it running. You mostly <b>answer questions and approve work in chat</b>; this guide shows you <b>what you'll see</b>, <b>what to get done</b>, and <b>exactly what you approve to move on</b>. Written for someone who has never used the system before.</p>
 
   <div class="know">
     <b>Four things worth knowing first:</b>
     <ol>
       <li><b>You're in charge.</b> The studio drafts and checks the work, but nothing goes out without your yes. Push back whenever something feels off.</li>
-      <li><b>It works in stages, on purpose.</b> You can't start a campaign before it knows your business — and you advance each stage by <b>approving</b> it. That gate is the red box in every stage below.</li>
+      <li><b>It works in stages, on purpose.</b> Your business was set up once during install (see the <a href="deployment-guide.html">Deployment guide</a>); from there you advance each campaign stage by <b>approving</b> it — that gate is the red box in every stage below.</li>
       <li><b>It's a conversation, not a wizard.</b> You type plain‑English requests; it asks questions back and does the work. The screens shown here regenerate themselves — you read them, you don't maintain them.</li>
       <li><b>One chat per job.</b> A fresh chat for each campaign, and another for each system retro. Your work lives in files, so a new chat always picks up where you left off.</li>
     </ol>
@@ -191,12 +196,12 @@
   <div class="map">
     <div class="mt">Your journey at a glance</div>
     <ol>
-      <li><a href="#s0">Set up your business</a> <span class="gate">— approve your foundation</span></li>
       <li><a href="#s1">Start a campaign — the brief</a> <span class="gate">— approve the brief</span></li>
-      <li><a href="#s2">Pick a concept</a> <span class="gate">— choose one of three</span></li>
-      <li><a href="#s3">Approve the plan</a> <span class="gate">— approve the plan</span></li>
+      <li><a href="#s2">Pick a creative concept</a> <span class="gate">— choose one of three</span></li>
+      <li><a href="#s3">Approve the campaign plan</a> <span class="gate">— approve the plan</span></li>
       <li><a href="#s4">Produce &amp; approve each asset</a> <span class="gate">— approve each piece</span></li>
-      <li><a href="#s5">Launch &amp; keep it running</a> <span class="gate">— approve the rollout</span></li>
+      <li><a href="#s5">Launch</a> <span class="gate">— approve the launch plan</span></li>
+      <li><a href="#s6">Manage &amp; report</a> <span class="gate">— ongoing campaigns</span></li>
       <li class="x"><a href="#sx">Improve the studio</a> <span class="gate">— ongoing, optional</span></li>
     </ol>
   </div>
@@ -205,54 +210,22 @@
     <details open>
       <summary><span class="sn">&#9656;</span><span class="sh">How it all fits together</span><span class="stag">Orientation</span></summary>
       <div class="sbody">
-        <p class="intro">Three layers. You set up your business <b>once</b>; you run <b>many</b> campaigns on top of it; and the whole studio can <b>improve itself</b> over time.</p>
-        <div class="layer sys"><div class="lh">The studio</div><div class="ls">The engine + the System Manager. Gets better over time as you capture ideas and run retros.</div></div>
-        <div class="layer ten"><div class="lh">Your business <span style="font-weight:400;color:var(--slate600)">— set up once (Stage 1)</span></div><div class="ls">Your brand voice, look, the rules you follow, and where you publish. Every campaign inherits this.</div></div>
-        <div class="layer camp"><div class="lh">Each campaign <span style="font-weight:400;color:var(--slate600)">— Stages 2–6</span></div><div class="ls">Brief → concept → plan → produce → launch → keep going. As many as you like, each in its own chat.</div></div>
-        <div class="flowtag"><span><b>Lessons graduate up</b> — what a campaign learns improves your foundation.</span><span><b>Context inherits down</b> — every campaign starts from your foundation.</span></div>
-      </div>
-    </details>
-  </div>
-
-  <div class="stage" id="s0">
-    <details open>
-      <summary><span class="sn">1</span><span class="sh">Set up your business</span><span class="stag">Once · before any campaign</span></summary>
-      <div class="sbody">
-        <p class="intro">Your first move. In a chat named <i>Brand setup</i>, type <code>Onboard &lt;your business&gt;</code>. The studio interviews you and builds your <b>foundation</b> — not an app screen, but a folder of files every campaign reads from. Campaigns can't start until it's in place, so nothing ever inherits a blank brand.</p>
-        <div class="frame">
-          <div class="chrome">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1a2a5e" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
-            <span class="addr">tenant-brand/</span><span style="color:var(--slate600)">&nbsp;— your foundation, kept as files in your repo</span>
+        <p class="intro">The fastest way to get it is to watch the studio work — <b>Claude on one side, your operator surfaces on the other</b>. The short tour below walks a single request from start to a finished, approved piece; the stages after it break that same loop down, step by step.</p>
+        <div class="vidhold">
+          <div class="vptri">&#9654;</div>
+          <div>
+            <div class="vh">Watch the studio work</div>
+            <div class="vs">A side‑by‑side tour: Claude on one side, your operator surfaces on the other — a request becoming a finished, approved piece, end to end.</div>
           </div>
-          <div class="board">
-            <span class="chip"><span class="sq"></span>Acme Co · small business</span>
-            <div class="sh3" style="margin:16px 0 8px">What the interview gathers</div>
-            <ul class="arts">
-              <li><span style="font-weight:500">Style guide</span> <span style="color:var(--slate600);font-size:13px">colours · fonts · logo</span></li>
-              <li><span style="font-weight:500">Tone of voice</span> <span style="color:var(--slate600);font-size:13px">how you sound</span></li>
-              <li><span style="font-weight:500">Brand positioning</span> <span style="color:var(--slate600);font-size:13px">what you stand for</span></li>
-              <li><span style="font-weight:500">Target segments</span> <span style="color:var(--slate600);font-size:13px">who you're selling to</span></li>
-              <li><span style="font-weight:500">Governance &amp; compliance</span> <span style="color:var(--slate600);font-size:13px">what you can &amp; can't say</span></li>
-              <li><span style="font-weight:500">Channels</span> <span style="color:var(--slate600);font-size:13px">where you publish</span></li>
-              <li><span style="font-weight:500">Martech stack</span> <span style="color:var(--slate600);font-size:13px">your tools — CRM · email · analytics</span></li>
-            </ul>
-          </div>
+          <div class="vbadge">Demo video · coming soon</div>
         </div>
-        <div class="do"><h4>What you do</h4><p>Type <code>Onboard &lt;your business&gt;</code>, then answer its questions. Have your style guide, tone‑of‑voice notes, compliance rules, customer segments and publishing tools ready to paste or describe.</p></div>
-        <div class="checklist"><h4>✅ You're done when</h4>
-          <ul>
-            <li><span class="cbx"></span>You've answered the interview for each area above.</li>
-            <li><span class="cbx"></span>You've reviewed your brand profile and it sounds like you.</li>
-          </ul>
-        </div>
-        <div class="approve"><h4>→ To continue, you approve</h4><p>The studio shows you each part of the foundation. Say <b>"approve"</b> to each (brand, compliance, segments…). Once approved, the campaign gate opens.</p></div>
       </div>
     </details>
   </div>
 
   <div class="stage" id="s1">
     <details>
-      <summary><span class="sn">2</span><span class="sh">Start a campaign — the brief</span><span class="stag">Phase 1</span></summary>
+      <summary><span class="sn">1</span><span class="sh">Start a campaign — the brief</span><span class="stag">Phase 1</span></summary>
       <div class="sbody">
         <p class="intro">In a <b>new chat</b> (one per campaign), type <code>start a campaign: &lt;what it's for&gt;</code>. The studio interviews you and drafts a one‑page <b>brief</b> — one goal, one measure of success, who it's for, the offer — and opens the campaign's <b>dashboard</b>: the single page that answers "where am I, what's next?".</p>
 
@@ -278,31 +251,7 @@
             <div style="font-size:11.5px;color:var(--slate600);font-style:italic;margin-top:12px;border-top:1px solid var(--slate200);padding-top:9px">…plus The offer · Audience (from your segment map) · Insights that matter · Single‑minded proposition — each colour‑tagged <span class="atag read">Your read</span> vs <span class="atag ai">AI synthesis</span> so you always see what's yours and what the studio proposed.</div>
           </div>
         </div>
-        <p class="intro" style="margin-top:18px">It also opens your campaign <b>dashboard</b> — the home page that tracks this campaign from here:</p>
-
-        <div class="frame">
-          <div class="chrome"><span class="tl"></span><span class="tl"></span><span class="tl"></span><span class="addr">campaigns/acme-q3-leadgen/dashboard.html</span></div>
-          <div class="board">
-            <div style="font-size:12px;color:var(--slate600);margin-bottom:11px">All Campaigns &rsaquo; <span style="color:var(--navy);font-weight:500">Acme Co · Q3 Lead‑Gen Campaign</span></div>
-            <div class="sh3">Campaign DNA — the locked strategy at a glance</div>
-            <table class="dna">
-              <tr><td class="k">Big idea</td><td>Let prospects watch the product solve <i>their own</i> problem — a 60‑second "your brief, our output" reel.</td></tr>
-              <tr><td class="k">Key message</td><td>See it work on your brief, then decide.</td></tr>
-              <tr><td class="k">KPI floor</td><td>30 qualified demos booked by 30 Sep · <span style="color:var(--navy);font-weight:600">4 booked ✓</span></td></tr>
-              <tr><td class="k">Concept</td><td>Smart <span style="color:var(--navy)">(selected ✓)</span></td></tr>
-            </table>
-            <div class="sh3" style="margin-top:20px">Phases &amp; artifacts</div>
-            <table class="dtable">
-              <thead><tr><th>Phase</th><th>Step</th><th>Status</th><th>Human time</th><th>AI cost</th></tr></thead>
-              <tbody>
-                <tr><td class="ph">1</td><td>Fact‑Find (Brief)</td><td><span style="color:var(--red);font-weight:600">● Awaiting you</span></td><td>~15 min</td><td>~$0.50</td></tr>
-                <tr><td class="ph">2</td><td>Concept Design</td><td style="color:#a7a69f">Pending</td><td>—</td><td>—</td></tr>
-                <tr><td class="ph">3</td><td>Plan</td><td style="color:#a7a69f">Pending</td><td>—</td><td>—</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <div class="note"><b>The dashboard tracks everything for you:</b> the locked strategy (Campaign DNA), every phase with its status, the human time + AI cost each step took, and a prioritised <b>To‑Do</b> with the <i>why</i> behind each action. You read it; it maintains itself.</div>
+        <div class="note"><b>It also opens your campaign dashboard</b> — your day‑to‑day home for this campaign (its locked strategy, every phase's status, time + cost, and your To‑Do). That's the second screen under <b>Your home base</b>, below.</div>
         <div class="do"><h4>What you do</h4><p>Answer the brief interview (short, ~15 min). Read the one‑page brief it drafts.</p></div>
         <div class="checklist"><h4>✅ You're done when</h4>
           <ul>
@@ -317,7 +266,7 @@
 
   <div class="stage" id="s2">
     <details>
-      <summary><span class="sn">3</span><span class="sh">Pick a concept</span><span class="stag">Phase 2</span></summary>
+      <summary><span class="sn">2</span><span class="sh">Pick a creative concept (one big idea)</span><span class="stag">Phase 2</span></summary>
       <div class="sbody">
         <p class="intro">The Creative Director comes back with <b>three</b> creative directions — one safe, one smart, one bold — with <b>one recommended</b> and the reasons why. You read them and choose. You can also steer ("sharpen the bold one") and it re‑works around your call.</p>
         <div class="frame">
@@ -346,15 +295,15 @@
 
   <div class="stage" id="s3">
     <details>
-      <summary><span class="sn">4</span><span class="sh">Approve the plan</span><span class="stag">Phase 3</span></summary>
+      <summary><span class="sn">3</span><span class="sh">Approve the campaign plan</span><span class="stag">Phase 3</span></summary>
       <div class="sbody">
-        <p class="intro">The studio lays out <b>exactly what it will make</b> — every asset, what each one ships, and the order. One page. You approve it before anything gets produced, so there are no surprises.</p>
+        <p class="intro">The studio lays out <b>exactly what it will make</b> — every asset, what each one outputs, and the order. One page. You approve it before anything gets produced, so there are no surprises.</p>
         <div class="frame">
           <div class="chrome"><span class="tl"></span><span class="tl"></span><span class="tl"></span><span class="addr">campaigns/acme-q3-leadgen/plan.html</span></div>
           <div class="board">
             <div class="sh3">The asset list</div>
             <table class="dtable">
-              <thead><tr><th>#</th><th>Asset</th><th>Ships</th><th>Channel</th></tr></thead>
+              <thead><tr><th>#</th><th>Asset</th><th>Output</th><th>Channel</th></tr></thead>
               <tbody>
                 <tr><td class="ph">1</td><td>Demo‑invite email</td><td>HTML email</td><td>Email</td></tr>
                 <tr><td class="ph">2</td><td>Demo landing page</td><td>HTML + images</td><td>Web</td></tr>
@@ -369,17 +318,17 @@
         <div class="checklist"><h4>✅ You're done when</h4>
           <ul>
             <li><span class="cbx"></span>The asset list is what you want made.</li>
-            <li><span class="cbx"></span>Each asset's "ships" output is clear.</li>
+            <li><span class="cbx"></span>Each asset's output is clear.</li>
           </ul>
         </div>
-        <div class="approve"><h4>→ To continue, you approve</h4><p>Say <b>"approve the plan"</b>. Production (Stage 5) begins — the studio builds each asset in turn.</p></div>
+        <div class="approve"><h4>→ To continue, you approve</h4><p>Say <b>"approve the campaign plan"</b>. Production begins — the studio builds each asset in turn.</p></div>
       </div>
     </details>
   </div>
 
   <div class="stage" id="s4">
     <details>
-      <summary><span class="sn">5</span><span class="sh">Produce &amp; approve each asset</span><span class="stag">Phase 4</span></summary>
+      <summary><span class="sn">4</span><span class="sh">Produce &amp; approve each asset</span><span class="stag">Phase 4</span></summary>
       <div class="sbody">
         <p class="intro">The studio produces each asset — written, brand‑checked, compliance‑checked — and lays them out by channel in the <b>gallery</b>. You review and approve each one. This is where most of your time goes, one piece at a time.</p>
         <div class="frame">
@@ -429,43 +378,77 @@
         <div class="do"><h4>What you do</h4><p>Open each "For review" tile. Read the asset in full, work any open questions (the gate), use the top buttons to open the live page / copy / folder.</p></div>
         <div class="checklist"><h4>✅ You're done when</h4>
           <ul>
-            <li><span class="cbx"></span>You've read the asset in full.</li>
-            <li><span class="cbx"></span>Its open questions are resolved (or you'll defer them to launch).</li>
+            <li><span class="cbx"></span>You've reviewed the creative design of the asset.</li>
+            <li><span class="cbx"></span>You've reviewed the copy for the asset.</li>
+            <li><span class="cbx"></span>You've reviewed the final output of the asset.</li>
+            <li><span class="cbx"></span>You've resolved any outstanding questions (or deferred them to launch).</li>
           </ul>
         </div>
-        <div class="approve"><h4>→ To continue, you approve</h4><p>You <b>don't approve from the screen</b> — give your verdict <b>in chat</b>: <b>"approve the landing page"</b>, or <b>"send it back — tighten the subhead"</b>, or <b>"kill it"</b>. Repeat for each asset until all are approved.</p></div>
+        <div class="approve"><h4>→ To continue, you approve</h4><p>You <b>don't approve from the screen</b> — give your verdict <b>in chat</b>: <b>"approve the landing page"</b>, or <b>"send it back — tighten the subhead"</b>, or <b>"archive/delete it"</b>. Repeat for each asset until all are approved.</p></div>
       </div>
     </details>
   </div>
 
   <div class="stage" id="s5">
     <details>
-      <summary><span class="sn">6</span><span class="sh">Launch &amp; keep it running</span><span class="stag">Phases 5–6</span></summary>
+      <summary><span class="sn">5</span><span class="sh">Launch</span><span class="stag">Phase 5</span></summary>
       <div class="sbody">
-        <p class="intro">Each approved piece either <b>publishes</b> (where the studio is connected to your tools) or gives you simple <b>copy‑paste steps</b> — you always do the final "send". Anything ongoing runs on a simple <b>weekly rhythm</b>: one or two moves a week.</p>
+        <p class="intro">Each approved piece either <b>publishes</b> (where the studio is connected to your tools) or gives you simple <b>copy‑paste steps</b> — you always do the final "send". The studio lays out the go‑live plan; you approve it, then work down the list.</p>
         <div class="frame">
-          <div class="chrome"><span class="tl"></span><span class="tl"></span><span class="tl"></span><span class="addr">campaigns/acme-q3-leadgen/operations.html</span></div>
+          <div class="chrome"><span class="tl"></span><span class="tl"></span><span class="tl"></span><span class="addr">campaigns/acme-q3-leadgen/phase-5-rollout.html</span></div>
           <div class="board">
+            <div class="sh3">Launch plan — what goes live, and how</div>
             <table class="dtable">
-              <thead><tr><th style="width:22px"></th><th style="width:86px">Week</th><th>What you do</th></tr></thead>
+              <thead><tr><th style="width:22px"></th><th>Asset</th><th>How it goes live</th></tr></thead>
               <tbody>
-                <tr><td><span class="cbxs"></span></td><td class="ph">Wk 1</td><td>Publish <b>the launch post → LinkedIn</b>; keep half an eye on it daily (~5 min). No decisions.</td></tr>
-                <tr><td><span class="cbxs"></span></td><td class="ph">Wk 3</td><td><b>First read</b> (~30 min): walk the numbers; small, reversible tweaks only.</td></tr>
-                <tr><td><span class="cbxs"></span></td><td class="ph">Wk 4</td><td><b>The big call</b> (~60 min): shift budget from the weakest channel to the strongest. Write down <i>why</i>.</td></tr>
-                <tr><td><span class="cbxs"></span></td><td class="ph">Wk 6</td><td><b>Close the campaign</b>: results report → retro → graduate the learnings → freeze.</td></tr>
+                <tr><td><span class="cbxs"></span></td><td>Demo‑invite email</td><td>Pushed to your email tool as a draft → <b>you hit send</b></td></tr>
+                <tr><td><span class="cbxs"></span></td><td>Demo landing page</td><td>Copy‑paste deploy steps (cookbook) → publish to acme.example/demo</td></tr>
+                <tr><td><span class="cbxs"></span></td><td>Launch post</td><td>Ready caption + image → <b>you post to LinkedIn</b></td></tr>
               </tbody>
             </table>
             <details class="howto"><summary>▸ Publishing a post — for whoever posts to LinkedIn</summary><div class="howbody">Each post ships with a ready caption and image — whoever publishes just copies and posts. After posting, tell the studio "mark the launch post done" and it updates the tracker.</div></details>
           </div>
         </div>
-        <div class="do"><h4>What you do</h4><p>First approve the launch plan; then follow the weekly rhythm — publish when it says, read the numbers, make the one budget call, and close out at the end.</p></div>
+        <div class="do"><h4>What you do</h4><p>Approve the launch plan, then work down it — publish where the studio is connected, follow the copy‑paste steps elsewhere, and do the final send yourself.</p></div>
         <div class="checklist"><h4>✅ You're done when</h4>
           <ul>
-            <li><span class="cbx"></span>You've approved the launch (Phase 5) plan.</li>
-            <li><span class="cbx"></span>You're following the weekly moves (or it's a one‑off — nothing ongoing).</li>
+            <li><span class="cbx"></span>You've approved the launch plan.</li>
+            <li><span class="cbx"></span>You've completed the launch tasks.</li>
           </ul>
         </div>
-        <div class="approve"><h4>→ To continue, you approve</h4><p>Say <b>"approve Phase 5 plan"</b> before any step goes live. For ongoing campaigns, you approve each cycle as it comes.</p></div>
+        <div class="approve"><h4>→ To continue, you approve</h4><p>Say <b>"approve Phase 5 plan"</b> before any step goes live. A one‑off campaign is done here; an ongoing one moves to <b>Manage &amp; Report</b>.</p></div>
+      </div>
+    </details>
+  </div>
+
+  <div class="stage" id="s6">
+    <details>
+      <summary><span class="sn">6</span><span class="sh">Manage &amp; Report</span><span class="stag">Phase 6 · ongoing campaigns</span></summary>
+      <div class="sbody">
+        <p class="intro">For anything ongoing, the studio runs a simple <b>weekly rhythm</b> — one or two moves a week. You read the numbers it reports, make the occasional call, and it closes out at the end. <i>(A one‑off campaign skips this stage.)</i></p>
+        <div class="frame">
+          <div class="chrome"><span class="tl"></span><span class="tl"></span><span class="tl"></span><span class="addr">campaigns/acme-q3-leadgen/phase-6-cadence.html</span></div>
+          <div class="board">
+            <table class="dtable">
+              <thead><tr><th style="width:22px"></th><th style="width:86px">Week</th><th>What you do</th></tr></thead>
+              <tbody>
+                <tr><td><span class="cbxs"></span></td><td class="ph">Wk 1</td><td>Keep half an eye on the live pieces daily (~5 min). No decisions.</td></tr>
+                <tr><td><span class="cbxs"></span></td><td class="ph">Wk 3</td><td><b>First read</b> (~30 min): the studio reports the numbers; small, reversible tweaks only.</td></tr>
+                <tr><td><span class="cbxs"></span></td><td class="ph">Wk 4</td><td><b>The big call</b> (~60 min): shift budget from the weakest channel to the strongest. Write down <i>why</i>.</td></tr>
+                <tr><td><span class="cbxs"></span></td><td class="ph">Wk 6</td><td><b>Close the campaign</b>: results report → retro → graduate the learnings → freeze.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="do"><h4>What you do</h4><p>Approve the ongoing‑management plan, then follow the weekly moves — read the studio's numbers, make the one budget call, and let it report + close out at the end.</p></div>
+        <div class="checklist"><h4>✅ You're done when</h4>
+          <ul>
+            <li><span class="cbx"></span>You've approved the ongoing‑management plan.</li>
+            <li><span class="cbx"></span>You've completed this cycle's tasks.</li>
+            <li><span class="cbx"></span>You're following the weekly moves.</li>
+          </ul>
+        </div>
+        <div class="approve"><h4>→ To continue, you approve</h4><p>Say <b>"approve Phase 6 plan"</b>, then approve each cycle as it comes. A closed campaign freezes — its learnings graduate up to sharpen the next one.</p></div>
       </div>
     </details>
   </div>
@@ -474,7 +457,7 @@
     <details>
       <summary><span class="sn">&#9656;</span><span class="sh">Your home base — all campaigns</span><span class="stag">Where you land</span></summary>
       <div class="sbody">
-        <p class="intro">Every campaign as a card — the phase it's in, how it's tracking, and quick links into each part. This is where you start each session.</p>
+        <p class="intro">Two screens you live in: the <b>All Campaigns</b> list (where you start each session), and any one campaign's <b>Dashboard</b> (its day‑to‑day home). Both shown below.</p>
         <div class="frame">
           <div class="chrome"><span class="tl"></span><span class="tl"></span><span class="tl"></span><span class="addr">campaigns/index.html</span></div>
           <div class="board">
@@ -487,6 +470,31 @@
           </div>
         </div>
         <div class="note">Each card shows the phase, how it's tracking, and quick links to that campaign's <b>Dashboard · Brief · Concept · Plan · Gallery</b>. "View all tasks" rolls every campaign's to‑dos into one queue.</div>
+
+        <p class="intro" style="margin-top:20px"><b>Click a campaign</b> → its <b>Dashboard</b>, the day‑to‑day home for that one campaign:</p>
+        <div class="frame">
+          <div class="chrome"><span class="tl"></span><span class="tl"></span><span class="tl"></span><span class="addr">campaigns/acme-q3-leadgen/dashboard.html</span></div>
+          <div class="board">
+            <div style="font-size:12px;color:var(--slate600);margin-bottom:11px">All Campaigns &rsaquo; <span style="color:var(--navy);font-weight:500">Acme Co · Q3 Lead‑Gen Campaign</span></div>
+            <div class="sh3">Campaign DNA — the locked strategy at a glance</div>
+            <table class="dna">
+              <tr><td class="k">Big idea</td><td>Let prospects watch the product solve <i>their own</i> problem — a 60‑second "your brief, our output" reel.</td></tr>
+              <tr><td class="k">Key message</td><td>See it work on your brief, then decide.</td></tr>
+              <tr><td class="k">KPI floor</td><td>30 qualified demos booked by 30 Sep · <span style="color:var(--navy);font-weight:600">4 booked ✓</span></td></tr>
+              <tr><td class="k">Concept</td><td>Smart <span style="color:var(--navy)">(selected ✓)</span></td></tr>
+            </table>
+            <div class="sh3" style="margin-top:20px">Phases &amp; artifacts</div>
+            <table class="dtable">
+              <thead><tr><th>Phase</th><th>Step</th><th>Status</th><th>Human time</th><th>AI cost</th></tr></thead>
+              <tbody>
+                <tr><td class="ph">4</td><td>Asset production</td><td><span style="color:var(--red);font-weight:600">● 1 awaiting you</span></td><td>~10 min</td><td>~$2.10</td></tr>
+                <tr><td class="ph">5</td><td>Launch</td><td style="color:#a7a69f">Pending</td><td>—</td><td>—</td></tr>
+                <tr><td class="ph">6</td><td>Manage &amp; Report</td><td style="color:#a7a69f">Pending</td><td>—</td><td>—</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="note"><b>The dashboard tracks everything for you:</b> the locked strategy (Campaign DNA), every phase with its status, the human time + AI cost each step took, and a prioritised <b>To‑Do</b> with the <i>why</i> behind each action. You read it; it maintains itself.</div>
       </div>
     </details>
   </div>
@@ -513,6 +521,7 @@
         <div class="do"><h4>What you do</h4><p>Capture an idea any time (<code>capture an idea: …</code> or <code>add to backlog: …</code>); run a retro every few weeks (<code>run a system retro</code>) to turn lessons into the board above.</p></div>
         <div class="checklist"><h4>How to read it</h4>
           <ul>
+            <li><span class="cbx"></span><b>Inbox</b> — decide which captured ideas to work on (triage them into the backlog).</li>
             <li><span class="cbx"></span><b>Needs you</b> — improvements blocked on a decision only you can make.</li>
             <li><span class="cbx"></span><b>AI can action</b> — improvements the studio can just carry out.</li>
           </ul>

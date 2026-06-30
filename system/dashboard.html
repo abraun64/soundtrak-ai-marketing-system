@@ -77,7 +77,11 @@ html, body {
   gap: 6px;
   font-size: 13px;
   line-height: 1.4;
+  flex: 1;
+  min-width: 0;
 }
+/* Help & guides link sits at the far right of the bar, next to the refresh control. */
+.breadcrumb > :last-child { margin-left: auto; }
 .crumb {
   color: var(--text-muted);
   text-decoration: none;
@@ -1659,7 +1663,7 @@ body.template-system { background: var(--bg); }
     <div class="sm-top">
       <div>
         <h1 class="sm-title">System operator dashboard</h1>
-        <div class="sm-updated">Updated 2026-06-30 06:46</div>
+        <div class="sm-updated">Updated 2026-06-30 07:11</div>
       </div>
       <div class="sm-actions">
         <button class="sm-btn is-primary" onclick="copyCmd('/system-manager retro')">Run a retro</button>

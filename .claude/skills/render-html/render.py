@@ -754,10 +754,12 @@ def build_breadcrumb(output_path: Path, project_root: Path) -> str:
             html_parts.append(f'<a class="crumb crumb-link" href="{href}">{label}</a>')
         else:
             html_parts.append(f'<span class="crumb crumb-current">{label}</span>')
-    # Global Help & guides link — right-aligned, present on every operator surface (Retro-5).
+    # Global Help & guides link — pushed to the far right of the breadcrumb bar (next to
+    # the refresh control), present on every operator surface (Retro-5). margin-left:auto
+    # right-aligns it inside the flex breadcrumb (float is ignored on flex items).
     help_href = href_to("docs/guide/help.html")
     html_parts.append(
-        f'<a class="crumb-link" style="float:right;font-weight:500" href="{help_href}">Help &amp; guides</a>'
+        f'<a class="crumb-link" style="margin-left:auto;font-weight:500" href="{help_href}">Help &amp; guides</a>'
     )
     return "".join(html_parts)
 
