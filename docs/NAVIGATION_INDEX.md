@@ -61,6 +61,7 @@ Each section answers: *what kind of thing is this, when do you read it, and wher
 | **System Manager spec** | The System-layer owner: backlog + idea inbox + audit schema, the operator dashboard (To Do split "Needs you" / "AI can action" + audit history), and the capture / triage / retro / groom workflows. | `docs/specs/system-manager.md` |
 | **Agent I/O Contract spec** | Structured dispatch + return envelopes for CM↔agent handoffs (machine-checkable orchestration: ship-file existence, explicit verdicts, cost capture). WIRED (additive) — SYS-004 Steps 2-3: validator (`agent-io` skill) + agents emit + CM validates; Step 4 (sole source of truth) gated. | `docs/specs/agent-io-contract.md` |
 | **Standalone Deployment spec** | Retro-5: packaging the system as a clean single-tenant "Seed" — ship/tenant/personal manifest, the `build_seed` allowlist cut + leak scan, Phase-0 hard gate, install doctor, the phased plan + safety model. | `docs/specs/standalone-deployment.md` |
+| **Download-gate spec** | SYS-048: the soundtrak.com "Agree & Download" click-wrap gate (spec + copy) that strengthens contract formation beyond the repo's browse-wrap, pairing with the in-tool first-run acceptance gate. Master-internal (not shipped in the Seed). | `docs/specs/download-gate.md` |
 
 ---
 

@@ -62,25 +62,52 @@ def sweep_stale_assets(now: float) -> list[tuple[str, int, str]]:
     return out
 
 
-def sweep_stale_surfaces(now: float) -> list[tuple[str, int]]:
-    """(html-path-relative, days-html-is-behind-newest-source) for rendered HTML
-    older than the source data in its own folder.
+# render-html stamps every output with the breadcrumb + (when present) library-nav
+# chrome; bespoke Producer HTML (slides, mockups, case studies, storyboards) carries
+# neither. This is the reliable "was this auto-rendered by our pipeline?" signal.
+_PIPELINE_SIG = ('class="crumb', 'library-nav')
 
-    For each campaign-level .html surface we compare against the newest of its
-    sibling source files (same stem .md, plus campaign.yaml / gallery-config.yaml /
-    asset.yaml in the folder). A positive skew beyond SURFACE_SKEW_DAYS = stale."""
+
+def _is_pipeline_output(html: Path) -> bool:
+    """True if the .html was produced by the render-html pipeline (so re-rendering
+    it from its source is safe + meaningful). Read-only; False on any read error."""
+    try:
+        text = html.read_text(encoding="utf-8", errors="replace")
+    except Exception:  # noqa: BLE001
+        return False
+    return any(s in text for s in _PIPELINE_SIG)
+
+
+def sweep_stale_surfaces(now: float) -> list[tuple[str, int]]:
+    """(html-path-relative, days-html-is-behind-source) for AUTO-RENDERED operator
+    surfaces whose HTML is older than the source the render pipeline actually
+    rebuilds them from.
+
+    SCOPE (SYS-040): only flag surfaces the system actually re-renders on a state
+    change. Two discriminators, both required for the per-asset case:
+      - the .html carries the render-html PIPELINE SIGNATURE (every render.py output
+        ships the breadcrumb / library-nav chrome), so it is template-rendered, AND
+      - it has a SAME-STEM .md newer than it (the source the pipeline rebuilds from);
+    plus gallery.html (build-gallery.py, from gallery-config.yaml).
+    This EXCLUDES bespoke one-off artifacts a Producer hand-builds (mockups, slides,
+    og-cards, storyboards, print specs, case studies). Those produced the original
+    false-positive flood two ways: (1) no same-stem source, but a sibling asset.yaml
+    mtime bump made every hand-built .html in the folder look 'stale'; (2) a bespoke
+    .html that merely shares a stem with a notes .md. Neither is auto-rendered, so a
+    timer flagging them is noise the operator can't action by 're-rendering'."""
     flagged = []
     for html in sorted(cc.CAMPAIGNS_DIR.glob("**/*.html")):
-        # candidate sources: same-stem markdown + structural yaml in the same folder
-        folder = html.parent
+        is_gallery = html.name == "gallery.html"
+        if not is_gallery and not _is_pipeline_output(html):
+            continue  # bespoke / hand-built artifact (not template-rendered) — skip
         sources = []
         same_md = html.with_suffix(".md")
         if same_md.exists():
             sources.append(same_md)
-        for name in ("campaign.yaml", "gallery-config.yaml", "asset.yaml"):
-            p = folder / name
-            if p.exists():
-                sources.append(p)
+        if is_gallery:
+            gc = html.parent / "gallery-config.yaml"
+            if gc.exists():
+                sources.append(gc)
         if not sources:
             continue
         newest_src = max(p.stat().st_mtime for p in sources)

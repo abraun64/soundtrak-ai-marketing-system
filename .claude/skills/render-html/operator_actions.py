@@ -239,10 +239,11 @@ def scan_campaign(campaign_dir: Path) -> list[dict]:
     if yaml is None:
         return []
     assets_dir = campaign_dir / "assets"
-    if not assets_dir.is_dir():
-        return []
     out: list[dict] = []
-    for asset_folder in sorted(assets_dir.iterdir()):
+    # An early-phase campaign (no assets/ dir yet) still has campaign-level
+    # operator_actions in campaign.yaml (e.g. "pick a concept") — skip the asset walk
+    # but STILL read those below, so the operator's next action always surfaces.
+    for asset_folder in (sorted(assets_dir.iterdir()) if assets_dir.is_dir() else []):
         if not asset_folder.is_dir():
             continue
         m = re.match(r"^(\d+)-", asset_folder.name)
@@ -988,6 +989,20 @@ def render_phases_table_md(phases: list[dict], campaign_dir: Path) -> str:
         "| Phase | Description | Status | Window | Human Time | AI Cost | Artifacts |",
         "|---|---|---|---|---|---|---|",
     ]
+    # SYS-049: a dedicated Phase 0 · Foundation row, linking to the tenant's baseline
+    # surface (the brand tenant foundation this campaign inherits). Shown only when the
+    # tenant is known and its Phase-0 page exists — never crash the table on a lookup.
+    try:
+        _cy = scan_campaign_yaml(campaign_dir)
+        _tslug = str(_cy.get("tenant") or "").strip()
+        _repo = campaign_dir.parent.parent
+        if _tslug and (_repo / "tenant-brand" / f"{_tslug}-phase0.html").exists():
+            lines.append(
+                "| 0 | Foundation — brand tenant baseline (inherited) | Inherited | — | — | — | "
+                f"[Brand foundation](../../tenant-brand/{_tslug}-phase0.html) |"
+            )
+    except Exception:  # noqa: BLE001
+        pass
     # SYS-030: the Artifacts column shows ONE authoritative link per phase (the primary,
     # always listed first); any other / superseded docs drop to the collapsed archive below
     # so the gate is unambiguous about what to review.
@@ -1059,7 +1074,10 @@ def scan_all_campaigns(campaigns_root: Path) -> list[dict]:
     for child in sorted(campaigns_root.iterdir()):
         if not child.is_dir():
             continue
-        if not (child / "assets").is_dir():
+        # A campaign is defined by its campaign.yaml. Recognise early-phase campaigns
+        # (Phase 1-3) that have no assets/ dir yet, so they still surface on the index /
+        # tenant home / tasks. (Was: require assets/, which hid pre-production campaigns.)
+        if not ((child / "campaign.yaml").is_file() or (child / "assets").is_dir()):
             continue
         camp_yaml = scan_campaign_yaml(child)
         name = str(camp_yaml.get("campaign_name") or child.name)
@@ -1097,7 +1115,9 @@ def _phase_done(phase: dict, campaign_dir: Path | None) -> bool:
             return False
         if "🔄" in s or "⏳" in s or "🟡" in s or "⚠" in s or "❌" in s:
             return False
-        return s.startswith("✅") or s.lower() in ("approved", "done", "complete", "selected")
+        # "inherited" = the Phase-0 foundation (established at the tenant layer) — a
+        # completed, non-pending state, so the current-stage pill skips past it.
+        return s.startswith("✅") or s.lower() in ("approved", "done", "complete", "selected", "inherited")
     if campaign_dir is None:
         return False  # can't derive without disk context
     if mode == "derive_assets":
@@ -1452,16 +1472,10 @@ def _render_campaign_index_impl(campaigns: list[dict]) -> str:
             f'<a href="{_html.escape(href)}">{_html.escape(label)}</a>' for label, href in surfaces
         )
 
+        # SYS-049: the "Brand" chip is now derived from the tenant (built in the tenant
+        # block below) → the Phase-0 foundation page, so every card shows it consistently.
+        # The artifact-derived context_links are no longer rendered here.
         context_html = ""
-        if context_links:
-            context_html = (
-                '<div class="camp-card__context">'
-                + "".join(
-                    f'<a href="{_html.escape(href)}">{_html.escape(label)}</a>'
-                    for label, href in context_links.items()
-                )
-                + "</div>"
-            )
 
         # ── Stats line (asset progress demoted here; blockers/cadence) ──
         stats: list[str] = []
@@ -1488,6 +1502,14 @@ def _render_campaign_index_impl(campaigns: list[dict]) -> str:
                 tenant_eyebrow = f'<a class="camp-card__tenant" href="../tenant-brand/{_tslug}-home.html">🏢 {_tdisp}</a>'
             else:
                 tenant_eyebrow = f'<span class="camp-card__tenant">🏢 {_tdisp}</span>'
+            # SYS-049: "Brand" chip → the tenant's Phase-0 foundation page (the whole
+            # baseline, not just the brand doc), shown next to the pill on every card.
+            if (repo_root / "tenant-brand" / f"{_tslug}-phase0.html").exists():
+                context_html = (
+                    '<div class="camp-card__context">'
+                    f'<a href="../tenant-brand/{_tslug}-phase0.html">Brand</a>'
+                    '</div>'
+                )
 
         active_cards.append(
             '<div class="camp-card">'

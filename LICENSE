@@ -17,6 +17,35 @@ The **Soundtrak AI Studio** ("the software") is licensed under the
 - ❌ You **may not** distribute, resell, host, sub‑license, or repackage the software or works based on it.
 - ➕ Any of those uses — agency/client use, reselling, hosting, OEM, or other commercialisation — requires a **separate commercial license** from Soundtrak Consulting. Contact **soundtrakconsulting.com**.
 
+## ⚠️ No warranty · use entirely at your own risk · no liability
+
+> *(DRAFT — these Soundtrak Additional Terms are drafted to give the broadest protection the law allows. They supplement, and where permitted strengthen, the "No Liability" clause of the PolyForm license below. **Have your legal counsel confirm enforceability and the consumer-law carve-out before you publish.** No wording can stop a person from filing a claim; what these terms do is disclaim warranties, place the risk on the user, cap liability at effectively nil, and give the people behind the project a complete defence.)*
+
+These Additional Terms are a condition of, and are accepted as part of, your license to the software.
+
+**Acceptance — by downloading, you agree.** By downloading, cloning, copying, installing, accessing, running, or otherwise using the software (or any part of it, or any work based on it), you acknowledge that you have read and understood these terms and agree to be bound by them. **If you do not agree, do not download, access, or use the software.**
+
+**Provided "AS IS" and "AS AVAILABLE".** To the maximum extent permitted by law, the software is provided "as is" and "as available", with all faults and defects, and **without warranties or conditions of any kind** — express, implied, statutory, or arising from course of dealing or usage of trade. The Protected Parties (defined below) disclaim all such warranties and conditions, including any implied warranty or condition of merchantability, fitness for a particular purpose, title, quiet enjoyment, accuracy, non-infringement, security, reliability, and availability, and any warranty that the software will be uninterrupted, timely, error-free, or free of harmful components.
+
+**You assume the entire risk.** You assume the entire risk as to the quality, performance, security, legality, and results of the software and any output it produces. The Protected Parties accept no responsibility for, and you accept and assume all risk arising from, among other things:
+
+- **software bugs, errors, defects, and failures**, and any unintended behaviour;
+- **data loss, data corruption, or loss of access** to your data, accounts, or systems;
+- **security and cyber risks of every kind** — vulnerabilities, malware, viruses, ransomware, unauthorised access, data breaches, interception, exfiltration, account compromise, and any act or omission of a third party;
+- **third-party components, AI models, services, APIs, and dependencies** the software uses or integrates with, and any change, outage, deprecation, or failure in them;
+- **AI-generated output** — the software is built with and operates artificial-intelligence tools, and any output may be inaccurate, incomplete, outdated, biased, infringing, non-compliant, or otherwise unfit. **You are solely responsible for independently reviewing, verifying, and approving every output before relying on it, publishing it, or distributing it;** and
+- **your use of, or reliance on, the software or its output** — including any marketing, business, financial, legal, regulatory, or compliance decision or outcome.
+
+You are solely responsible for backing up your data and systems, for your own security controls, and for ensuring your use of the software and its output is lawful and compliant in your jurisdiction.
+
+**No liability — to the maximum extent permitted by law.** To the maximum extent permitted by law, in no event will the Protected Parties be liable to you or to any third party for any loss or damage of any kind arising out of or in connection with these terms, the software, its output, or your use of or inability to use it — whether the claim is in contract, tort (including negligence), statute, or any other theory, and whether or not a Protected Party was advised of, knew of, or should have known of the possibility of that loss or damage. This applies to all loss or damage, including (without limitation) direct, indirect, incidental, special, consequential, exemplary, and punitive loss or damage, and any loss of profit, revenue, goodwill, business, opportunity, data, or anticipated savings, and any business-interruption or security-incident cost. **To the extent any liability cannot lawfully be excluded but can be limited, the Protected Parties' total aggregate liability for all claims is limited, at the relevant Protected Party's option, to re-supplying the software or to AUD $100 — whichever is lower.** The software is supplied free of charge, and this allocation of risk is a fundamental basis on which it is made available.
+
+**Indemnity.** To the maximum extent permitted by law, you will indemnify, defend, and hold harmless the Protected Parties from and against all claims, demands, proceedings, liabilities, damages, losses, penalties, fines, and costs (including reasonable legal costs) arising out of or in connection with your download, use, modification, or distribution of the software or its output, your breach of these terms, or your violation of any law or any third-party right.
+
+**Who is protected ("Protected Parties").** These disclaimers, exclusions, limitations, and indemnities are for the benefit of, and may be relied on and enforced by, **Soundtrak Consulting, Andrew Braun, and each of their respective related entities, owners, directors, officers, employees, agents, and contributors** — each a "Protected Party". **Andrew Braun is named individually and deliberately: to the extent the law allows, no claim arising from the software lies against him personally.**
+
+**Your non-excludable rights.** Some laws (for example, the Australian Consumer Law) imply guarantees or confer rights and remedies that cannot lawfully be excluded, restricted, or modified. **Nothing in these terms excludes, restricts, or modifies any such right, guarantee, or remedy that you have and that cannot lawfully be excluded.** Where the law allows a Protected Party to limit (rather than exclude) its liability for breach of such a right, that liability is limited as set out above. If any part of these terms is held unenforceable, it is severed and the remainder continues in force, and each disclaimer, exclusion, and limitation operates independently of the others.
+
 ## Trademarks
 This license covers the **code only**. It grants **no rights** to the "Soundtrak" name, logo, or other Soundtrak marks — see `TRADEMARK.md`.
 

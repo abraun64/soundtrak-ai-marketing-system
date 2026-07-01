@@ -222,6 +222,15 @@ When the last Plan asset is Approved/Live/Killed (or the operator closes the cam
 5. **On approval, execute same turn**: write playbook entries (+ graduation-log rows), fire `/library-add`, append queue items; re-render the quintet.
 6. **Freeze**: set `closed: true` + Status → Closed. The folder is now read-only history — future campaigns inherit from the **tenant layer**, never this folder (graduate-then-cite).
 
+**Archive / unarchive a campaign (SYS-039) — a surface move, never a delete.** To move a finished or parked campaign out of the Active grid into the collapsed "Archived campaigns" block on the index (and out of the cross-campaign tasks queue) without deleting anything:
+
+```
+python .claude/lib/archive_campaign.py --campaign <slug>             # archive
+python .claude/lib/archive_campaign.py --campaign <slug> --unarchive # restore to Active
+```
+
+It sets `archived: true` (+ an `archived_date`) in campaign.yaml, re-renders the index, tasks, and the campaign dashboard, and confirms. The folder stays on disk and in the campaigns repo; unarchive round-trips it straight back to Active. Archiving is independent of Closing — a campaign can be archived while still live (parked), or closed-then-archived.
+
 ---
 
 ## Tenant layer + operator surfaces (always-on)

@@ -1166,6 +1166,53 @@ def build_library_nav(output_path: Path, project_root: Path) -> str:
     return f'<nav class="library-nav" aria-label="Site links">{"".join(links)}</nav>'
 
 
+# SYS-043 — a render that can't fill a section must SAY so (loudly + visibly),
+# never ship an empty one. The operator_actions / cross-surface / status injects
+# above each swallow their exception and leave their UPPER_CASE_AUTO sentinel
+# un-replaced; as an HTML comment that sentinel then renders INVISIBLE — i.e. a
+# silently blank operator section (this is what blanked the campaigns index once).
+_RESIDUAL_MARKER_RE = re.compile(
+    r"<!--\s*([A-Z0-9_]*(?:_AUTO|_MARKER|AUTO_INJECT)[A-Z0-9_]*)\s*-->"
+)
+
+
+def guard_residual_markers(rendered: str, output_path: Path) -> tuple[str, list[str]]:
+    """Fail loud + visible, never silently blank. Scan the FINAL html for any
+    left-over auto-inject sentinel; for each, emit a stderr WARN naming the file +
+    marker and replace the (invisible) comment with a VISIBLE placeholder so a
+    failed section announces itself. Returns (patched_html, [markers found])."""
+    found: list[str] = []
+
+    def _sub(m):
+        token = m.group(1).strip()
+        found.append(token)
+        return (
+            '<div class="render-warn" role="alert" style="background:#fdeaea;'
+            'border:2px solid #e63c3c;color:#a01818;padding:10px 14px;margin:14px 0;'
+            'border-radius:6px;font-weight:600;font-family:system-ui,-apple-system,sans-serif;">'
+            f'⚠ This section failed to render (unprocessed <code>{html_lib.escape(token)}</code>). '
+            'The underlying data is intact — re-render to fix. See the render log.</div>'
+        )
+
+    rendered = _RESIDUAL_MARKER_RE.sub(_sub, rendered)
+    if found:
+        names = ", ".join(dict.fromkeys(found))
+        print(f"WARN render-guard: {output_path} shipped with unprocessed marker(s): {names} "
+              f"— a section failed to render (now shown as a visible placeholder, not a blank).",
+              file=sys.stderr)
+    return rendered, found
+
+
+def scan_html_for_markers(html_path: Path) -> list[str]:
+    """Read-only: return any residual auto-inject markers left in an already-rendered
+    .html (for the smoke test / a structural check). [] = clean."""
+    try:
+        return [m.group(1).strip()
+                for m in _RESIDUAL_MARKER_RE.finditer(html_path.read_text(encoding="utf-8"))]
+    except Exception:  # noqa: BLE001
+        return []
+
+
 def render(markdown_path: Path, template_name: str, output_path: Path, extra_context: dict | None = None) -> None:
     """Render markdown + template → HTML file."""
     # Normalize the template name. The Stop hook passes the base.html path as
@@ -1324,6 +1371,10 @@ def render(markdown_path: Path, template_name: str, output_path: Path, extra_con
             if isinstance(value, (dict, list)):
                 continue
             rendered = rendered.replace(f"{{{{ {key} }}}}", str(value))
+
+    # SYS-043 — last line of defence: never write a surface with an unprocessed
+    # marker silently. Warn loudly + leave a visible placeholder for any leftover.
+    rendered, _residual = guard_residual_markers(rendered, output_path)
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(rendered, encoding="utf-8")

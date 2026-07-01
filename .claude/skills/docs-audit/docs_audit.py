@@ -174,7 +174,11 @@ def _newest_mtime(paths: list[Path]) -> tuple[float, Path | None]:
 def scan_staleness() -> list[str]:
     problems: list[str] = []
     roster = list(AGENTS.glob("*/AGENT.md")) if AGENTS.is_dir() else []
-    specfiles = list(SPECS.glob("*.md")) if SPECS.is_dir() else []
+    # Master-internal specs (excluded from the Seed, not prospect-relevant) must not trigger a
+    # "public docs behind" alarm — mirror build_seed's docs/specs excludes + folder indexes.
+    _INTERNAL_SPEC = ("standalone-deployment", "download-gate", "pitch-deck", "README", "INDEX")
+    specfiles = [p for p in SPECS.glob("*.md")
+                 if not any(x in p.name for x in _INTERNAL_SPEC)] if SPECS.is_dir() else []
     publicfiles = list(PUBLIC.glob("*.md")) if PUBLIC.is_dir() else []
     if not publicfiles:
         return ["docs/public/ — no *.md files found"]

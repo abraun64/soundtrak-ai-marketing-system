@@ -107,6 +107,26 @@ if CAMP.is_dir():
         check("L2", c.name, dash and gal, "missing: " + ", ".join(miss) if miss else "")
     check("L2", "campaigns/index.html", (CAMP / "index.html").exists())
     check("L2", "campaigns/tasks.html", (CAMP / "tasks.html").exists())
+
+    # SYS-043 — a rendered operator surface must not ship with an unprocessed
+    # *_AUTO / *_MARKER sentinel (a swallowed inject = a silently blank section).
+    # The render guard now leaves a VISIBLE placeholder; this catches any surface
+    # that still carries a raw marker structurally, not by the operator noticing.
+    try:
+        sys.path.insert(0, str(ROOT / ".claude" / "skills" / "render-html"))
+        from render import scan_html_for_markers  # type: ignore
+        blanked: list[str] = []
+        for c in active:
+            for hp in (c / "dashboard.html", c / f"{c.name}.html", c / "gallery.html"):
+                if hp.exists():
+                    blanked += [f"{c.name}/{hp.name}:{t}" for t in scan_html_for_markers(hp)]
+        for hp in (CAMP / "index.html", CAMP / "tasks.html"):
+            if hp.exists():
+                blanked += [f"{hp.name}:{t}" for t in scan_html_for_markers(hp)]
+        check("L2", "no unprocessed render markers", not blanked,
+              "; ".join(blanked[:6]) if blanked else "")
+    except Exception as e:
+        check("L2", "no unprocessed render markers", False, f"scan failed: {e}"[:120])
 else:
     check("L2", "campaigns/ dir", False, "campaigns/ not found")
 

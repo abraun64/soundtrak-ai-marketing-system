@@ -11,6 +11,12 @@ System Manager; see "Cutting a release" at the foot of this file.
 ## [Unreleased]
 
 ### Fixed
+- **Early-phase campaigns work fully before they have assets.** A campaign now appears on the
+  All-Campaigns index and its tenant home as soon as it has a `campaign.yaml` (previously it stayed
+  hidden until asset production began), the stage pill correctly skips the inherited Phase-0
+  foundation row, and its campaign-level to-dos (e.g. the next gate action like "pick a concept")
+  now surface on the dashboard To Do and the tasks queue — a second spot where the assets-first
+  assumption had silently hidden them.
 - **Campaign To Do shows only current-stage tasks.** The dashboard To Do and the
   cross-campaign tasks queue no longer surface tasks for phases the campaign hasn't
   reached yet (e.g. launch or cadence steps while still in asset production) — only the
@@ -22,6 +28,14 @@ System Manager; see "Cutting a release" at the foot of this file.
 - **System Manager backlog/ideas/audit resolve to one canonical store.** Edits and id
   allocation always target the main checkout (never a per-worktree copy), with a
   duplicate-id guard — preventing ticket-id collisions when work spans git worktrees.
+- **The licensor's name is kept in the legal files when cutting a Seed.** The clean-cut's
+  privacy scrub no longer rewrites the operator's name inside `LICENSE` / `NOTICE` — a
+  liability disclaimer must name who it protects — while still scrubbing real client names
+  everywhere, so a release can't be blocked by its own license text.
+- **Stale-surface sweep stops crying wolf.** The scheduled stale check now flags only
+  genuinely auto-rendered operator surfaces (those the render pipeline rebuilds), not the
+  hand-built one-off artifacts in an asset folder — so the report shows real, actionable
+  drift instead of dozens of false positives from a sibling file's timestamp.
 
 ### Changed
 - **Campaign dashboard — one authoritative link per phase.** The Phases & Artifacts
@@ -41,6 +55,31 @@ System Manager; see "Cutting a release" at the foot of this file.
   board reflects reality during long working sessions instead of silently lagging.
 
 ### Added
+- **Fresh-install validation.** A new `validate_seed` step cold-clones a cut Seed into a
+  throwaway dir (exactly as a downloader receives it) and gates the release on three checks
+  passing — install doctor reports READY, the Phase-0 gate correctly blocks with no tenant,
+  and one render produces HTML — so a release can't be cut that fails for a real downloader.
+- **Archive / unarchive a campaign in one step.** A finished or parked campaign can be moved
+  out of the Active grid into a collapsed "Archived" block (and out of the tasks queue) and
+  back again with a single command — a pure surface move that never deletes the campaign.
+- **No-silent-blank render guard.** If a generated surface ever fails to fill a section, the
+  renderer now shows a visible "this section failed to render" placeholder and logs a warning
+  (and the smoke test catches it) instead of shipping a silently empty page.
+- **Archive-migration utility.** A reusable tool buckets a flat folder of prefixed files into
+  per-edition folders with a manifest — dry-run by default, never deletes — for tidying a
+  tenant's legacy content archive.
+- **Memory-origins cross-reference.** A tool that answers "why does this rule exist?" — it maps
+  each remembered rule back to the work that spawned it (the retro, ticket, or session) and lists,
+  per piece of work, the rules it produced. Read-only, with an opt-in backfill for the unambiguous
+  cases only.
+- **First-run license acceptance.** On first run the install doctor now shows the disclaimer and
+  won't proceed until you accept it (type "I AGREE", or `--accept-license` when scripting) — an
+  affirmative act of assent recorded locally, so downloading is no longer silent acceptance.
+- **Phase-0 baseline dashboard.** A per-tenant operator surface that shows every foundation item as
+  done (with the date it was established), drafted-but-not-yet-ratified, or still to do — plus the
+  best-practice library with a one-click "add an entry" prompt and an audit-history footer. Linked
+  from each tenant home and refreshed alongside it, and reachable from the All-Campaigns index (a
+  **Brand** link on every campaign card) and every campaign dashboard (a **Phase 0 · Foundation** row).
 - **Docs-currency check.** A new `docs-audit` diagnostic (run in the smoke test + the
   weekly digest) catches stale agent counts, dropped navigation-index columns, and public
   docs that fell behind the agent/spec set — so the reference docs stay honest automatically.
@@ -90,4 +129,5 @@ _For the maintainer (the System Manager owns this):_
    **[Unreleased]** above it. Bump per SemVer — MAJOR (breaking) · MINOR (feature) · PATCH (fix).
 3. Tag the commit: `git tag -a vX.Y.Z -m "Soundtrak AI Studio vX.Y.Z"`.
 4. Cut + scan the Seed: `python .claude/lib/build_seed.py --out <dir> --git`.
-5. Eyeball it, then push the Seed to the public repo — the human-gated step.
+5. Validate the cut: `python .claude/lib/validate_seed.py --seed <dir>` (cold-clone → doctor + Phase-0 gate + render; must pass).
+6. Eyeball it, then push the Seed to the public repo — the human-gated step.

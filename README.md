@@ -13,7 +13,7 @@ evolve the code.
 
 ## First run
 
-1. Check prerequisites:  `python .claude/skills/system-smoke-test/doctor.py`
+1. Check prerequisites (you'll be asked to accept the license on first run):  `python .claude/skills/system-smoke-test/doctor.py`
 2. Read the operating manual:  `docs/workflow.md`
 3. Open Claude Code in this folder and say **"Onboard <your business>"**. The Campaign
    Manager runs **Phase 0** (your tenant baseline) - required before any campaign can start.

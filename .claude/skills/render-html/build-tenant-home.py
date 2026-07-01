@@ -159,6 +159,8 @@ def build(slug: str) -> int:
 
 _The durable compound every campaign inherits — built **once** at the tenant layer, **cited** per campaign (never re-built per campaign). **{_established}/{_total} established.**_
 
+**[→ Full Phase-0 baseline status (completion dates · drafted-vs-done · audit history)]({slug}-phase0.html)**
+
 {_baseline_md(tenant)}
 
 <small>✅ established · 🟡 planned (Phase 0 artifact not yet built). This is the Phase 0 artifact set — campaigns link up here, they don't duplicate it. Edit `tenant-brand/{slug}.yaml` to change what shows.</small>
@@ -181,6 +183,11 @@ _The durable compound every campaign inherits — built **once** at the tenant l
     if res.returncode != 0:
         print(f"  render FAILED for {slug}: {res.stderr.strip()}", file=sys.stderr)
         return 1
+    # Refresh the detailed Phase-0 baseline surface (SYS-049) alongside the home, so it
+    # stays current on the same turn-end / stop-hook cadence.
+    p0 = ROOT / ".claude" / "skills" / "render-html" / "build-phase0-surface.py"
+    if p0.exists():
+        subprocess.run([sys.executable, str(p0), "--tenant", slug], capture_output=True, text=True)
     print(f"  tenant home built: {md_path.name} -> {html_path.name} "
           f"({len(active)} active, {len(archived)} archived campaigns)")
     return 0

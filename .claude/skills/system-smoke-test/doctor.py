@@ -100,7 +100,22 @@ def attempt_fix() -> None:
 def main() -> int:
     ap = argparse.ArgumentParser(description="Install doctor - check (and optionally fix) prerequisites.")
     ap.add_argument("--fix", action="store_true", help="attempt to install any missing prerequisites")
+    ap.add_argument("--accept-license", action="store_true",
+                    help="accept the license non-interactively (first-run gate)")
     a = ap.parse_args()
+
+    # First-run license gate (SYS-048): show the disclaimer + require acceptance before any
+    # setup work runs. Accepted once per install; recorded locally (never shipped in the Seed).
+    sys.path.insert(0, str(ROOT / ".claude" / "lib"))
+    try:
+        import accept_license
+        if not accept_license.require(ROOT, auto_accept=a.accept_license,
+                                      interactive=sys.stdin.isatty()):
+            print("\nInstall doctor halted: accept the license to continue.")
+            return 2
+    except Exception as e:  # noqa: BLE001 — a gate failure must never brick the doctor
+        print(f"(license gate skipped: {e})", file=sys.stderr)
+
     if a.fix:
         attempt_fix()
     sym = {"ok": "[ OK ]", "warn": "[WARN]", "fail": "[FAIL]"}

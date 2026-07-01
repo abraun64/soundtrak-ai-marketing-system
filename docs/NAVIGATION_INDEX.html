@@ -1878,14 +1878,14 @@ body.template-index a.camp-card__tenant:hover { text-decoration: underline; }
 .resonance-read.res--unknown { background: var(--code-bg);      color: var(--text-muted); }
 </style>
 </head>
-<body class="template-base">
+<body class="template-spec">
   <header class="page-header">
     <div class="page-header__inner">
       <nav class="breadcrumb" aria-label="Breadcrumb"><a class="crumb crumb-link" href="../campaigns/index.html">🏠 All Campaigns</a></nav>
       <div class="page-header__right">
         <nav class="library-nav" aria-label="Site links"><a class="lib-link" href="guide/help.html" title="Help &amp; guides — deployment, operator guide, FAQ">📖 Help &amp; guides</a><a class="lib-link" href="../tenant/library/INDEX.html" title="Unified reference library">📚 Library</a></nav>
         <button type="button" class="refresh-btn" onclick="location.reload()" title="Refresh this page" aria-label="Refresh">&#10227;</button>
-        <span class="page-header__template" aria-hidden="true">base</span>
+        <span class="page-header__template" aria-hidden="true">spec</span>
       </div>
     </div>
   </header>
@@ -2075,13 +2075,18 @@ body.template-index a.camp-card__tenant:hover { text-decoration: underline; }
 </tr>
 <tr>
 <td><strong>Agent I/O Contract spec</strong></td>
-<td>Structured dispatch + return envelopes for CM↔agent handoffs (machine-checkable orchestration: ship-file existence, explicit verdicts, cost capture). DESIGN ONLY — Step 1 of SYS-004's staged rollout.</td>
+<td>Structured dispatch + return envelopes for CM↔agent handoffs (machine-checkable orchestration: ship-file existence, explicit verdicts, cost capture). WIRED (additive) — SYS-004 Steps 2-3: validator (<code>agent-io</code> skill) + agents emit + CM validates; Step 4 (sole source of truth) gated.</td>
 <td><code>docs/specs/agent-io-contract.md</code></td>
 </tr>
 <tr>
 <td><strong>Standalone Deployment spec</strong></td>
 <td>Retro-5: packaging the system as a clean single-tenant "Seed" — ship/tenant/personal manifest, the <code>build_seed</code> allowlist cut + leak scan, Phase-0 hard gate, install doctor, the phased plan + safety model.</td>
 <td><code>docs/specs/standalone-deployment.md</code></td>
+</tr>
+<tr>
+<td><strong>Download-gate spec</strong></td>
+<td>SYS-048: the soundtrak.com "Agree &amp; Download" click-wrap gate (spec + copy) that strengthens contract formation beyond the repo's browse-wrap, pairing with the in-tool first-run acceptance gate. Master-internal (not shipped in the Seed).</td>
+<td><code>docs/specs/download-gate.md</code></td>
 </tr>
 </tbody>
 </table>
@@ -2252,6 +2257,12 @@ body.template-index a.camp-card__tenant:hover { text-decoration: underline; }
 <td>Per-dispatch AI cost ledger; dashboard AI-cost totals render from it (COST_TOTAL_AUTO).</td>
 <td>Called by CM on each subagent return</td>
 <td><code>.claude/skills/cost-ledger/</code></td>
+</tr>
+<tr>
+<td><strong>agent-io</strong></td>
+<td>Validates the agent I/O contract (SYS-004) — the structured <code>return:</code> envelope that rides alongside each agent's prose. CM runs <code>validate_envelope.py</code> on every return (dispatch_id pairing · status · per-agent required fields · ship-file existence) + appends the pair to the dispatch ledger. Additive / non-breaking.</td>
+<td>Called by CM on each subagent return; "validate the envelope"</td>
+<td><code>.claude/skills/agent-io/</code></td>
 </tr>
 <tr>
 <td><strong>content-subedit</strong></td>
